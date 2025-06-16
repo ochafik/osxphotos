@@ -314,6 +314,15 @@ if TYPE_CHECKING:
     "for improved compression while maintaining quality.",
 )
 @click.option(
+    "--jpegli-reencode-quality",
+    type=click.IntRange(1, 100),
+    default=85,
+    help="Quality setting for jpegli re-encoding (1-100, default 85). "
+    "Requires --jpegli-reencode to be set. Higher values produce better quality "
+    "at the cost of larger file sizes. The default of 85 provides excellent quality "
+    "with significant space savings.",
+)
+@click.option(
     "--fix-orientation",
     is_flag=True,
     help="Automatically fix image orientation in exported photos to match orientation in Photos database. "
@@ -993,6 +1002,7 @@ def export(
     jpeg_ext: str | None,
     jpeg_quality: float | None,
     jpegli_reencode: bool,
+    jpegli_reencode_quality: int,
     keep: tuple[str, ...],
     keyword: tuple[str, ...],
     keyword_template: tuple[str, ...],
@@ -1155,6 +1165,7 @@ def export_cli(
     config_only: bool = False,
     convert_to_jpeg: bool = False,
     jpegli_reencode: bool = False,
+    jpegli_reencode_quality: int = 85,
     crash_after: int | None = None,
     current_name: bool = False,
     deleted: bool = False,
@@ -1200,6 +1211,7 @@ def export_cli(
     is_reference: bool = False,
     jpeg_ext: str | None = None,
     jpeg_quality: float | None = None,
+    jpegli_reencode_quality: int = 85,
     keep: tuple[str, ...] = (),
     keyword: tuple[str, ...] = (),
     keyword_template: tuple[str, ...] = (),
@@ -1618,6 +1630,7 @@ def export_cli(
         ("ignore_signature", ("update", "force_update")),
         ("jpeg_quality", ("convert_to_jpeg")),
         ("jpegli_reencode", ("convert_to_jpeg",)),
+        ("jpegli_reencode_quality", ("jpegli_reencode",)),
         ("keep", ("cleanup")),
         ("missing", ("download_missing", "use_photos_export")),
         ("only_new", ("update", "force_update")),
@@ -2543,6 +2556,7 @@ def export_photo(
                 ignore_signature=ignore_signature,
                 jpeg_ext=jpeg_ext,
                 jpeg_quality=jpeg_quality,
+                jpegli_reencode_quality=jpegli_reencode_quality,
                 keyword_template=keyword_template,
                 missing=missing_original,
                 overwrite=overwrite,
@@ -2754,6 +2768,7 @@ def export_photo_to_directory(
     ignore_signature,
     jpeg_ext,
     jpeg_quality,
+    jpegli_reencode_quality,
     keyword_template,
     missing,
     overwrite,
@@ -2819,6 +2834,7 @@ def export_photo_to_directory(
                 ignore_signature=ignore_signature,
                 jpeg_ext=jpeg_ext,
                 jpeg_quality=jpeg_quality,
+                jpegli_quality=jpegli_reencode_quality,
                 keyword_template=keyword_template,
                 live_photo=export_live,
                 merge_exif_keywords=exiftool_merge_keywords,

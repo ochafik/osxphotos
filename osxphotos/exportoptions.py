@@ -39,6 +39,7 @@ class ExportOptions:
         increment (bool, default=True): if True, will increment file name until a non-existant name is found if overwrite=False and increment=False, export will fail if destination file already exists
         jpeg_ext (str): if set, will use this value for extension on jpegs converted to jpeg with convert_to_jpeg; if not set, uses jpeg; do not include the leading "."
         jpeg_quality (float in range 0.0 <= jpeg_quality <= 1.0): a value of 1.0 specifies use best quality, a value of 0.0 specifies use maximum compression.
+        jpegli_quality (int in range 1 <= jpegli_quality <= 100): quality setting for jpegli re-encoding, default 85. Higher values produce better quality at the cost of larger file sizes.
         keyword_template (list of str): list of template strings that will be rendered as used as keywords
         live_photo (bool, default=False): if True, will also export the associated .mov for live photos
         location (bool): if True, include location in exported metadata
@@ -94,6 +95,7 @@ class ExportOptions:
     increment: bool = True
     jpeg_ext: Optional[str] = None
     jpeg_quality: float = 1.0
+    jpegli_quality: int = 85
     keyword_template: Optional[list[str]] = None
     live_photo: bool = False
     location: bool = True

@@ -995,8 +995,8 @@ class PhotoExporter:
                             self._temp_dir_path
                             / f"{pathlib.Path(src).stem}_jpegli.jpeg"
                         )
-                        # Convert quality from 0.0-1.0 to 1-100
-                        jpegli_quality = int(options.jpeg_quality * 100)
+                        # Use custom jpegli quality setting
+                        jpegli_quality = options.jpegli_quality
                         if fileutil.reencode_jpeg_with_jpegli(src, jpegli_tmp, quality=jpegli_quality):
                             src = jpegli_tmp
                             verbose(f"Re-encoded {dest_str} with jpegli")
@@ -1010,7 +1010,7 @@ class PhotoExporter:
                         self._temp_dir_path
                         / f"{pathlib.Path(src).stem}_jpegli.jpeg"
                     )
-                    jpegli_quality = int(options.jpeg_quality * 100)
+                    jpegli_quality = options.jpegli_quality
                     if fileutil.reencode_jpeg_with_jpegli(src, jpegli_tmp, quality=jpegli_quality):
                         src = jpegli_tmp
                         verbose(f"Re-encoded {dest_str} with jpegli")

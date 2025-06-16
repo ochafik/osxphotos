@@ -23,6 +23,7 @@ OSXPhotos provides the ability to interact with and query Apple's Photos.app lib
 * [Command Line Usage](#command-line-usage)
   * [Command Line Examples](#command-line-examples)
   * [Tutorial](#tutorial)
+  * [Using jpegli for Better JPEG Compression](#using-jpegli-for-better-jpeg-compression)
   * [Command Line Reference: export](#command-line-reference-export)
   * [Files Created By OSXPhotos](#files-created-by-osxphotos)
 * [Python API](#python-api)
@@ -732,6 +733,117 @@ Some osxphotos commands such as export use color themes to colorize the output t
 
 osxphotos is very flexible.  If you merely want to backup your Photos library, then spending a few minutes to understand the `--directory` option is likely all you need and you can be up and running in minutes.  However, if you have a more complex workflow, osxphotos likely provides options to implement your workflow.  This tutorial does not attempt to cover every option offered by osxphotos but hopefully it provides a good understanding of what kinds of things are possible and where to explore if you want to learn more.
 <!-- OSXPHOTOS-TUTORIAL:END -->
+
+### Using jpegli for Better JPEG Compression
+
+[jpegli](https://github.com/google/jpegli) is Google's new JPEG coding library that provides significantly better compression while maintaining full compatibility with existing JPEG standards. When used with osxphotos, jpegli can reduce JPEG file sizes by approximately 35% at high quality settings without visible quality loss.
+
+#### Using the --jpegli-reencode Flag
+
+To use jpegli compression when exporting photos, add the `--jpegli-reencode` flag to your export command:
+
+```bash
+osxphotos export /path/to/export --jpegli-reencode
+```
+
+You can control the compression quality with the `--jpegli-reencode-quality` flag:
+
+```bash
+osxphotos export /path/to/export --jpegli-reencode --jpegli-reencode-quality 90
+```
+
+The `--jpegli-reencode` flag will:
+- Re-encode JPEG images using jpegli during export
+- Maintain the same visual quality while reducing file size
+- Process both original and edited JPEG images
+- Skip non-JPEG formats (PNG, HEIC, etc.)
+
+The `--jpegli-reencode-quality` flag:
+- Accepts values from 1 to 100 (default: 85)
+- Higher values produce better quality at the cost of larger file sizes
+- A value of 85 provides excellent quality with significant space savings
+- Requires `--jpegli-reencode` to be set
+
+**Note**: The `--jpegli-reencode` flag requires the jpegli binaries to be available. See the build instructions below.
+
+#### Building jpegli for macOS
+
+jpegli binaries are not included with osxphotos and must be built separately. Follow these instructions to build jpegli for your macOS system:
+
+##### Prerequisites
+
+1. Install Homebrew if not already installed:
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+2. Install required dependencies:
+```bash
+brew install cmake ninja
+```
+
+##### Build Instructions
+
+1. Clone the jpegli repository:
+```bash
+git clone https://github.com/google/jpegli.git
+cd jpegli
+```
+
+2. Build using the provided CI script:
+```bash
+./ci.sh release
+```
+
+This will build optimized binaries for your architecture (ARM64 on Apple Silicon, x86_64 on Intel).
+
+3. After successful build, copy the binaries to osxphotos:
+```bash
+# Create the directory if it doesn't exist
+mkdir -p /path/to/osxphotos/osxphotos/lib/
+
+# Copy the encoder binary
+cp build/tools/cjpegli /path/to/osxphotos/osxphotos/lib/
+
+# Copy the decoder binary (optional, for testing)
+cp build/tools/djpegli /path/to/osxphotos/osxphotos/lib/
+```
+
+##### Binary Placement
+
+The jpegli binaries should be placed in the `osxphotos/lib/` directory of your osxphotos installation:
+- `cjpegli`: JPEG encoder (required for --jpegli-reencode)
+- `djpegli`: JPEG decoder (optional)
+
+For a standard installation, this would typically be:
+- Development: `./osxphotos/lib/cjpegli`
+- Installed via pip/uv: Check your Python site-packages directory
+
+##### Architecture-Specific Builds
+
+If you need binaries for both architectures:
+
+**For Apple Silicon (ARM64)**:
+```bash
+# Build normally as above
+./ci.sh release
+# Binaries will be ARM64
+```
+
+**For Intel (x86_64)**:
+```bash
+# Use Rosetta or an Intel Mac
+arch -x86_64 ./ci.sh release
+# Binaries will be x86_64
+```
+
+##### Requirements and Limitations
+
+- macOS 10.12 (Sierra) or later
+- Xcode Command Line Tools or full Xcode installation
+- The `--jpegli-reencode` flag will fail gracefully if jpegli binaries are not found
+- jpegli only processes JPEG files; other formats are exported normally
+- Some JPEG images with unusual encoding may not be compatible with jpegli
 
 ### Command line reference: export
 
