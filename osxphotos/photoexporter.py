@@ -988,6 +988,34 @@ class PhotoExporter:
                     )
                     src = tmp_file
                     converted_to_jpeg_files.append(dest_str)
+                    
+                    # Add jpegli reencoding if requested
+                    if options.jpegli_reencode:
+                        jpegli_tmp = increment_filename(
+                            self._temp_dir_path
+                            / f"{pathlib.Path(src).stem}_jpegli.jpeg"
+                        )
+                        # Convert quality from 0.0-1.0 to 1-100
+                        jpegli_quality = int(options.jpeg_quality * 100)
+                        if fileutil.reencode_jpeg_with_jpegli(src, jpegli_tmp, quality=jpegli_quality):
+                            src = jpegli_tmp
+                            verbose(f"Re-encoded {dest_str} with jpegli")
+                        else:
+                            verbose(f"Failed to re-encode {dest_str} with jpegli, using standard JPEG")
+                
+                # Also handle existing JPEGs when jpegli_reencode is True but convert_to_jpeg is False
+                elif options.jpegli_reencode and self.photo.uti_original == "public.jpeg":
+                    # Re-encode existing JPEG with jpegli
+                    jpegli_tmp = increment_filename(
+                        self._temp_dir_path
+                        / f"{pathlib.Path(src).stem}_jpegli.jpeg"
+                    )
+                    jpegli_quality = int(options.jpeg_quality * 100)
+                    if fileutil.reencode_jpeg_with_jpegli(src, jpegli_tmp, quality=jpegli_quality):
+                        src = jpegli_tmp
+                        verbose(f"Re-encoded {dest_str} with jpegli")
+                    else:
+                        verbose(f"Failed to re-encode {dest_str} with jpegli, using original")
 
                 if options.exiftool or options.fix_orientation:
                     # if exiftool or fix_orientation, write the metadata

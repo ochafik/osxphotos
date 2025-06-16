@@ -306,6 +306,14 @@ if TYPE_CHECKING:
     f"Defaults to {DEFAULT_JPEG_QUALITY}",
 )
 @click.option(
+    "--jpegli-reencode",
+    is_flag=True,
+    help="Re-encode JPEG files using jpegli for better compression. "
+    "Requires --convert-to-jpeg to be set. This will re-encode all JPEGs "
+    "(both existing and newly converted) using Google's jpegli encoder "
+    "for improved compression while maintaining quality.",
+)
+@click.option(
     "--fix-orientation",
     is_flag=True,
     help="Automatically fix image orientation in exported photos to match orientation in Photos database. "
@@ -984,6 +992,7 @@ def export(
     is_reference: bool,
     jpeg_ext: str | None,
     jpeg_quality: float | None,
+    jpegli_reencode: bool,
     keep: tuple[str, ...],
     keyword: tuple[str, ...],
     keyword_template: tuple[str, ...],
@@ -1145,6 +1154,7 @@ def export_cli(
     cloudasset: bool = False,
     config_only: bool = False,
     convert_to_jpeg: bool = False,
+    jpegli_reencode: bool = False,
     crash_after: int | None = None,
     current_name: bool = False,
     deleted: bool = False,
@@ -1433,6 +1443,7 @@ def export_cli(
         is_reference = cfg.is_reference
         jpeg_ext = cfg.jpeg_ext
         jpeg_quality = cfg.jpeg_quality
+        jpegli_reencode = cfg.jpegli_reencode
         keep = cfg.keep
         keyword = cfg.keyword
         keyword_template = cfg.keyword_template
@@ -1606,6 +1617,7 @@ def export_cli(
         ("favorite_rating", ("exiftool", "sidecar")),
         ("ignore_signature", ("update", "force_update")),
         ("jpeg_quality", ("convert_to_jpeg")),
+        ("jpegli_reencode", ("convert_to_jpeg",)),
         ("keep", ("cleanup")),
         ("missing", ("download_missing", "use_photos_export")),
         ("only_new", ("update", "force_update")),
@@ -1866,6 +1878,8 @@ def export_cli(
         (download_missing and use_photokit) or not download_missing,
     )
     query_kwargs["burst_photos"] = export_bursts
+    # Remove jpegli_reencode as it's not a query option
+    query_kwargs.pop("jpegli_reencode", None)
     query_options = query_options_from_kwargs(**query_kwargs)
 
     # if not verbose, set photosdb verbose to print to stderr
@@ -2306,6 +2320,7 @@ def export_photo(
     original_suffix="",
     use_photos_export=False,
     convert_to_jpeg=False,
+    jpegli_reencode=False,
     jpeg_quality=1.0,
     ignore_date_modified=False,
     use_photokit=False,
@@ -2331,6 +2346,7 @@ def export_photo(
         dest: destination path as string
         album_keyword: bool; if True, exports album names as keywords in metadata
         convert_to_jpeg: bool; if True, converts non-jpeg images to jpeg
+        jpegli_reencode: bool; if True, re-encodes JPEG files using jpegli encoder for better compression
         description_template: str; optional template string that will be rendered for use as photo description
         directory: template used to determine output directory
         download_missing: attempt download of missing iCloud photos
@@ -2501,6 +2517,7 @@ def export_photo(
             results += export_photo_to_directory(
                 album_keyword=album_keyword,
                 convert_to_jpeg=convert_to_jpeg,
+                jpegli_reencode=jpegli_reencode,
                 description_template=description_template,
                 dest_path=dest_path,
                 dest=dest,
@@ -2621,6 +2638,7 @@ def export_photo(
                 results += export_photo_to_directory(
                     album_keyword=album_keyword,
                     convert_to_jpeg=convert_to_jpeg,
+                    jpegli_reencode=jpegli_reencode,
                     description_template=description_template,
                     dest_path=dest_path,
                     dest=dest,
@@ -2710,6 +2728,7 @@ def _render_suffix_template(
 def export_photo_to_directory(
     album_keyword,
     convert_to_jpeg,
+    jpegli_reencode,
     description_template,
     dest_path,
     dest,
@@ -2784,6 +2803,7 @@ def export_photo_to_directory(
         try:
             export_options = ExportOptions(
                 convert_to_jpeg=convert_to_jpeg,
+                jpegli_reencode=jpegli_reencode,
                 description_template=description_template,
                 download_missing=download_missing,
                 dry_run=dry_run,

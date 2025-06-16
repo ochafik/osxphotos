@@ -22,6 +22,7 @@ class ExportOptions:
 
     Attributes:
         convert_to_jpeg (bool): if True, converts non-jpeg images to jpeg
+        jpegli_reencode (bool): if True, re-encodes JPEG files using jpegli encoder (requires convert_to_jpeg)
         description_template (str): Optional template string that will be rendered for use as photo description
         download_missing: (bool, default=False): if True will attempt to export photo via applescript interaction with Photos if missing (see also use_photokit, use_photos_export)
         dry_run: (bool, default=False): set to True to run in "dry run" mode
@@ -76,6 +77,7 @@ class ExportOptions:
     """
 
     convert_to_jpeg: bool = False
+    jpegli_reencode: bool = False
     description_template: Optional[str] = None
     download_missing: bool = False
     dry_run: bool = False

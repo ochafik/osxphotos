@@ -69,6 +69,11 @@ class FileUtilABC(ABC):
 
     @classmethod
     @abstractmethod
+    def reencode_jpeg_with_jpegli(cls, src_file, dest_file, quality=85):
+        pass
+
+    @classmethod
+    @abstractmethod
     def rename(cls, src, dest):
         pass
 
@@ -235,6 +240,36 @@ class FileUtilMacOS(FileUtilABC):
         )
 
     @classmethod
+    def reencode_jpeg_with_jpegli(cls, src_file, dest_file, quality=85):
+        """Re-encode JPEG using jpegli encoder
+        
+        Args:
+            src_file: source JPEG file
+            dest_file: destination path for re-encoded file
+            quality: JPEG quality (1-100), default 85
+            
+        Returns:
+            True if success, otherwise False
+        """
+        import shutil
+        try:
+            from .jpegli import JpegliEncoder
+            
+            src_file = normalize_fs_path(src_file)
+            dest_file = normalize_fs_path(dest_file)
+            
+            encoder = JpegliEncoder()
+            encoder.encode(src_file, dest_file, quality=quality)
+            return True
+        except Exception as e:
+            # Fall back to regular copy if jpegli fails
+            import logging
+            logger = logging.getLogger("osxphotos")
+            logger.warning(f"jpegli encoding failed, falling back to regular copy: {e}")
+            shutil.copy2(src_file, dest_file)
+            return False
+
+    @classmethod
     def rename(cls, src, dest):
         """Copy src to dest
 
@@ -363,6 +398,10 @@ class FileUtilNoOp(FileUtil):
 
     @classmethod
     def convert_to_jpeg(cls, src_file, dest_file, compression_quality=1.0):
+        pass
+
+    @classmethod
+    def reencode_jpeg_with_jpegli(cls, src_file, dest_file, quality=85):
         pass
 
     @classmethod

@@ -1,0 +1,41 @@
+# Jpegli Compression Test Results
+
+## Test Setup
+- Test image: test_image.png (800x600 gradient)
+- Original PNG size: 17,730 bytes
+- Quality levels tested: 75, 85, 95
+
+## Results
+
+| Quality | Standard JPEG (bytes) | Jpegli (bytes) | Size Reduction |
+|---------|----------------------|----------------|----------------|
+| 75 | 10,534 | 8,096 | 23.1% |
+| 85 | 14,027 | 10,726 | 23.5% |
+| 95 | 35,808 | 22,322 | 37.7% |
+
+**Average size reduction: 28.1%**
+
+## Integration Recommendations for osxphotos
+
+1. **Build Configuration**:
+   - Use static linking to avoid runtime dependencies
+   - Consider building universal binary for Intel/ARM support
+   - Bundle pre-built binaries with osxphotos
+
+2. **Python Integration Options**:
+   - Option 1: Use subprocess to call jpegli binaries
+   - Option 2: Create Python bindings using ctypes
+   - Option 3: Use cython to wrap the C++ library
+
+3. **Recommended Implementation**:
+   ```python
+   def export_with_jpegli(image_path, output_path, quality=85):
+       """Export image using jpegli for better compression"""
+       cmd = ['cjpegli', image_path, output_path, '-q', str(quality)]
+       subprocess.run(cmd, check=True)
+   ```
+
+4. **Quality Presets**:
+   - High quality (archival): 95
+   - Standard quality: 85
+   - Web/sharing: 75
