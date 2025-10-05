@@ -4,9 +4,9 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
-    <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
-        <title>osxphotos._constants - osxphotos 0.68.6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
+        <title>osxphotos._constants - osxphotos 0.73.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=302659d7" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">osxphotos 0.68.6 documentation</div></a>
+      <a href="../../index.html"><div class="brand">osxphotos 0.73.1 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -190,7 +190,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">osxphotos 0.68.6 documentation</span>
+  <span class="sidebar-brand-text">osxphotos 0.73.1 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -241,13 +241,13 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for osxphotos._constants</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">os.path</span>
-<span class="kn">import</span> <span class="nn">sqlite3</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os.path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sqlite3</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
 
 <span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;osxphotos&quot;</span><span class="p">)</span>
 
@@ -271,7 +271,16 @@
 <span class="c1"># Photos 7 (12.0.1) == 15323</span>
 <span class="c1"># Photos 8 (13.0.0) == 16320</span>
 <span class="c1"># Photos 9 (14.0.0 dev preview) = 17120</span>
-<span class="n">_TEST_MODEL_VERSIONS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;13537&quot;</span><span class="p">,</span> <span class="s2">&quot;13703&quot;</span><span class="p">,</span> <span class="s2">&quot;14104&quot;</span><span class="p">,</span> <span class="s2">&quot;15323&quot;</span><span class="p">,</span> <span class="s2">&quot;16320&quot;</span><span class="p">,</span> <span class="s2">&quot;17120&quot;</span><span class="p">]</span>
+<span class="n">_TEST_MODEL_VERSIONS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;13537&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;13703&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;14104&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;15323&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;16320&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;17120&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;18402&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;18508&quot;</span><span class="p">,</span>
+<span class="p">]</span>
 
 <span class="n">_IPHOTO_VERSION</span> <span class="o">=</span> <span class="s2">&quot;0000&quot;</span>
 
@@ -293,6 +302,7 @@
 <span class="n">_PHOTOS_9_14_6_MODEL_VERSION</span> <span class="o">=</span> <span class="p">[</span><span class="mi">17600</span><span class="p">,</span> <span class="mi">17999</span><span class="p">]</span>  <span class="c1"># macOS 14.6 changed the schema</span>
 <span class="n">_PHOTOS_10B1_MODEL_VERSION</span> <span class="o">=</span> <span class="p">[</span><span class="mi">18000</span><span class="p">,</span> <span class="mi">18200</span><span class="p">]</span>  <span class="c1"># Sequoia dev preview 1: 18164</span>
 <span class="n">_PHOTOS_10_MODEL_VERSION</span> <span class="o">=</span> <span class="p">[</span><span class="mi">18201</span><span class="p">,</span> <span class="mi">18999</span><span class="p">]</span>
+<span class="n">_PHOTOS_11_MODEL_VERSION</span> <span class="o">=</span> <span class="p">[</span><span class="mi">19063</span><span class="p">,</span> <span class="mi">19999</span><span class="p">]</span>
 
 <span class="c1"># the preview versions of 12.0.0 had a difference schema for syndication info so need to check model version before processing</span>
 <span class="n">_PHOTOS_SYNDICATION_MODEL_VERSION</span> <span class="o">=</span> <span class="mi">15323</span>  <span class="c1"># 12.0.1</span>
@@ -430,6 +440,22 @@
         <span class="s2">&quot;MASTER_FINGERPRINT&quot;</span><span class="p">:</span> <span class="s2">&quot;ZADDITIONALASSETATTRIBUTES.ZORIGINALSTABLEHASH&quot;</span><span class="p">,</span>
         <span class="s2">&quot;HAS_ADJUSTMENTS&quot;</span><span class="p">:</span> <span class="s2">&quot;ZASSET.ZADJUSTMENTSSTATE&quot;</span><span class="p">,</span>
     <span class="p">},</span>
+    <span class="mi">11</span><span class="p">:</span> <span class="p">{</span>  <span class="c1"># macOS 16 / 26 Tahoe</span>
+        <span class="s2">&quot;ASSET&quot;</span><span class="p">:</span> <span class="s2">&quot;ZASSET&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;KEYWORD_JOIN&quot;</span><span class="p">:</span> <span class="s2">&quot;Z_1KEYWORDS.Z_51KEYWORDS&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ALBUM_JOIN&quot;</span><span class="p">:</span> <span class="s2">&quot;Z_32ASSETS.Z_3ASSETS&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ALBUM_SORT_ORDER&quot;</span><span class="p">:</span> <span class="s2">&quot;Z_32ASSETS.Z_FOK_3ASSETS&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;IMPORT_FOK&quot;</span><span class="p">:</span> <span class="s2">&quot;null&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;DEPTH_STATE&quot;</span><span class="p">:</span> <span class="s2">&quot;ZASSET.ZDEPTHTYPE&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;UTI_ORIGINAL&quot;</span><span class="p">:</span> <span class="s2">&quot;ZINTERNALRESOURCE.ZCOMPACTUTI&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ASSET_ALBUM_JOIN&quot;</span><span class="p">:</span> <span class="s2">&quot;Z_32ASSETS.Z_32ALBUMS&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ASSET_ALBUM_TABLE&quot;</span><span class="p">:</span> <span class="s2">&quot;Z_32ASSETS&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;HDR_TYPE&quot;</span><span class="p">:</span> <span class="s2">&quot;ZHDRTYPE&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;DETECTED_FACE_PERSON_FK&quot;</span><span class="p">:</span> <span class="s2">&quot;ZDETECTEDFACE.ZPERSONFORFACE&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;DETECTED_FACE_ASSET_FK&quot;</span><span class="p">:</span> <span class="s2">&quot;ZDETECTEDFACE.ZASSETFORFACE&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;MASTER_FINGERPRINT&quot;</span><span class="p">:</span> <span class="s2">&quot;ZADDITIONALASSETATTRIBUTES.ZORIGINALSTABLEHASH&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;HAS_ADJUSTMENTS&quot;</span><span class="p">:</span> <span class="s2">&quot;ZASSET.ZADJUSTMENTSSTATE&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
 <span class="p">}</span>
 
 <span class="c1"># Which version operating systems have been tested</span>
@@ -478,6 +504,14 @@
     <span class="p">(</span><span class="s2">&quot;14&quot;</span><span class="p">,</span> <span class="s2">&quot;4&quot;</span><span class="p">),</span>
     <span class="p">(</span><span class="s2">&quot;14&quot;</span><span class="p">,</span> <span class="s2">&quot;5&quot;</span><span class="p">),</span>
     <span class="p">(</span><span class="s2">&quot;14&quot;</span><span class="p">,</span> <span class="s2">&quot;6&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;14&quot;</span><span class="p">,</span> <span class="s2">&quot;7&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;15&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;15&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;15&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;15&quot;</span><span class="p">,</span> <span class="s2">&quot;3&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;15&quot;</span><span class="p">,</span> <span class="s2">&quot;4&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;15&quot;</span><span class="p">,</span> <span class="s2">&quot;5&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;15&quot;</span><span class="p">,</span> <span class="s2">&quot;6&quot;</span><span class="p">),</span>
 <span class="p">]</span>
 
 <span class="c1"># Photos 5 has persons who are empty string if unidentified face</span>
@@ -539,7 +573,7 @@
 <span class="n">_OSXPHOTOS_LOCK_EXTENSION</span> <span class="o">=</span> <span class="s2">&quot;.osxphotos.lock&quot;</span>
 
 
-<span class="k">class</span> <span class="nc">SearchCategory</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SearchCategory</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;SearchInfo categories for Photos 5+; corresponds to categories in database/search/psi.sqlite:groups.category</span>
 
 <span class="sd">    Note: This is a simple enum class; the values are not meant to be changed.</span>
@@ -610,7 +644,7 @@
     <span class="n">SOURCE</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Photos 8+ only</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">categories</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">categories</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return categories as dict of value: name&quot;&quot;&quot;</span>
         <span class="c1"># a bit of a hack to basically reverse the enum</span>
         <span class="k">return</span> <span class="p">{</span>
@@ -624,7 +658,7 @@
         <span class="p">}</span>
 
 
-<span class="k">class</span> <span class="nc">SearchCategory_Photos8</span><span class="p">(</span><span class="n">SearchCategory</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SearchCategory_Photos8</span><span class="p">(</span><span class="n">SearchCategory</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Search categories for Photos 8&quot;&quot;&quot;</span>
 
     <span class="c1"># Many of the category values changed in Ventura / Photos 8</span>
@@ -689,7 +723,7 @@
     <span class="n">SOURCE</span> <span class="o">=</span> <span class="mi">2200</span>  <span class="c1"># new in Photos 8, shows the app/software source for the photo, e.g. Messages, Safari, etc.</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">categories</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">categories</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return categories as dict of value: name&quot;&quot;&quot;</span>
         <span class="c1"># need to get the categories from the base class and update with the new values</span>
         <span class="n">classdict</span> <span class="o">=</span> <span class="n">SearchCategory</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -705,7 +739,7 @@
         <span class="p">}</span>
 
 
-<span class="k">def</span> <span class="nf">search_category_factory</span><span class="p">(</span><span class="n">version</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SearchCategory</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">search_category_factory</span><span class="p">(</span><span class="n">version</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SearchCategory</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return SearchCategory class for Photos version&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">SearchCategory_Photos8</span> <span class="k">if</span> <span class="n">version</span> <span class="o">&gt;=</span> <span class="mi">8</span> <span class="k">else</span> <span class="n">SearchCategory</span>
 
@@ -789,7 +823,7 @@
 
 <div class="viewcode-block" id="AlbumSortOrder">
 <a class="viewcode-back" href="../../reference.html#osxphotos.AlbumSortOrder">[docs]</a>
-<span class="k">class</span> <span class="nc">AlbumSortOrder</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AlbumSortOrder</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Album Sort Order&quot;&quot;&quot;</span>
 
     <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="mi">0</span>
@@ -864,7 +898,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=a98ddb9b"></script>
+</div><script src="../../_static/documentation_options.js?v=daf5f7ed"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=5fa4622c"></script>

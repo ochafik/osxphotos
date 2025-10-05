@@ -1,4 +1,4 @@
-""" Tests which require user interaction to run for osxphotos import command.
+"""Tests which require user interaction to run for osxphotos import command.
 run with pytest tests/test_cli_import.py --test-import
 """
 
@@ -36,7 +36,7 @@ if is_macos:
     from osxphotos.cli.export import export
     from osxphotos.cli.import_cli import import_main
 else:
-    pytest.skip(allow_module_level=True)
+    pytest.skip("Only runs on macOS", allow_module_level=True)
 
 
 TERMINAL_WIDTH = 250
@@ -1175,6 +1175,33 @@ def test_import_report():
 
 
 @pytest.mark.test_import
+def test_import_report_append():
+    """test import with --report --append option when report doesn't exist (#1835)"""
+
+    runner = CliRunner()
+    cwd = os.getcwd()
+    test_image_1 = os.path.join(cwd, TEST_IMAGE_1)
+
+    with runner.isolated_filesystem():
+        result = runner.invoke(
+            import_main,
+            [
+                test_image_1,
+                "--report",
+                "report.json",
+                "--append",
+                "--verbose",
+            ],
+        )
+        assert result.exit_code == 0
+        assert "Wrote import report" in result.output
+        assert os.path.exists("report.json")
+        with open("report.json", "r") as f:
+            records = json.load(f)
+        assert records[0]["filename"] == pathlib.Path(TEST_IMAGE_1).name
+
+
+@pytest.mark.test_import
 def test_import_report_json():
     """test import with --report option with json output"""
 
@@ -1453,6 +1480,55 @@ def test_import_parse_folder_date(tmp_path: pathlib.Path):
 
 
 @pytest.mark.test_import
+def test_import_parse_date_set_timezone(tmp_path: pathlib.Path):
+    """Test import with --parse-date with --set-timezone"""
+
+    # set up test images
+    cwd = os.getcwd()
+    test_image_source = os.path.join(cwd, TEST_IMAGE_NO_EXIF)
+
+    img_name = "IMG_2023-06-01T010203-0400.jpg"
+    test_file = tmp_path / img_name
+    shutil.copy(test_image_source, test_file)
+
+    # set file time to default date
+    os.utime(
+        test_file,
+        (PARSE_DATE_DEFAULT_DATE.timestamp(), PARSE_DATE_DEFAULT_DATE.timestamp()),
+    )
+
+    runner = CliRunner()
+    result = runner.invoke(
+        import_main,
+        [
+            "--verbose",
+            "--parse-date",
+            "IMG_%Y-%d-%mT%H%M%S%z",
+            "--set-timezone",
+            "--force",
+            str(test_file),
+        ],
+        terminal_width=TERMINAL_WIDTH,
+    )
+    assert result.exit_code == 0
+
+    # verify that the date was parsed correctly
+    photosdb = PhotosDB()
+    photo = photosdb.query(QueryOptions(name=[img_name]))[0]
+    dt = datetime.datetime(
+        2023,
+        1,
+        6,
+        1,
+        2,
+        3,
+        tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=72000)),
+    )
+    assert photo.date == dt
+    assert photo.date.tzinfo.utcoffset(photo.date) == dt.tzinfo.utcoffset(photo.date)
+
+
+@pytest.mark.test_import
 def test_import_post_function():
     """Test import with --post-function"""
 
@@ -1573,7 +1649,7 @@ def test_import_timezone(tmp_path):
     )
     assert result.exit_code == 0
 
-    # now import that exported photo with --exportdb
+    # now import that exported photo with --timezone
     result = runner.invoke(
         import_main,
         [

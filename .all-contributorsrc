@@ -902,6 +902,71 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "JxxIT",
+      "name": "JxxIT",
+      "avatar_url": "https://avatars.githubusercontent.com/u/110342008?v=4",
+      "profile": "https://github.com/JxxIT",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "KeyPlayerMaek",
+      "name": "Marek Toth",
+      "avatar_url": "https://avatars.githubusercontent.com/u/25553779?v=4",
+      "profile": "https://github.com/KeyPlayerMaek",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "pl804",
+      "name": "pl804",
+      "avatar_url": "https://avatars.githubusercontent.com/u/101955060?v=4",
+      "profile": "https://github.com/pl804",
+      "contributions": [
+        "test",
+        "data"
+      ]
+    },
+    {
+      "login": "cstaubli",
+      "name": "Christian Staubli",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6720436?v=4",
+      "profile": "https://github.com/cstaubli",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "YazdanRa",
+      "name": "Yazdan Ranjbar",
+      "avatar_url": "https://avatars.githubusercontent.com/u/32798567?v=4",
+      "profile": "http://yazdanra.com",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "m-reiter",
+      "name": "m-reiter",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5221258?v=4",
+      "profile": "https://github.com/m-reiter",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "mherzberg",
+      "name": "Michael Herzberg",
+      "avatar_url": "https://avatars.githubusercontent.com/u/12444544?v=4",
+      "profile": "https://www.mherzberg.de",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,

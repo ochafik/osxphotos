@@ -7,7 +7,7 @@
 [![Downloads](https://static.pepy.tech/personalized-badge/osxphotos?period=month&units=international_system&left_color=black&right_color=brightgreen&left_text=downloads/month)](https://pepy.tech/project/osxphotos)
 [![subreddit](https://img.shields.io/reddit/subreddit-subscribers/osxphotos?style=social)](https://www.reddit.com/r/osxphotos/)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-94-orange.svg?style=flat)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-101-orange.svg?style=flat)](#contributors)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 OSXPhotos provides the ability to interact with and query Apple's Photos.app library on macOS and Linux. You can query the Photos library database — for example, file name, file path, and metadata such as keywords/tags, persons/faces, albums, etc. You can also easily export both the original and edited photos. OSXPhotos also works with iPhoto libraries though some features are available only for Photos.
@@ -38,17 +38,17 @@ OSXPhotos provides the ability to interact with and query Apple's Photos.app lib
 
 Tested on Ubuntu Linux and macOS. Many features are only available on macOS.
 
-On Linux, macOS-specific features of the CLI will not be available (these will not be shown in the help output).
-The export and query CLI commands as well as the Python API will work on Linux which enables you to export photos
-from a Photos library on a Linux machine.
+On Linux, macOS-specific features of the CLI will not be available (these will not be shown in the help output). The export and query CLI commands as well as the Python API will work on Linux which enables you to export photos from a Photos library on a Linux machine.
 
-Tested on macOS Sierra (10.12.6) through macOS Sonoma (14.1). Tested on both x86 and Apple silicon (M1).
+Tested on macOS Sierra (10.12.6) through macOS Sequoia (15.6). Tested on both x86 and Apple silicon (M1).
 
-**OSXPhotos has been minimally tested with macOS Sequoia (15 beta) but new beta versions may break osxphotos support. If you encounter problems with macOS 15.0, please open an issue.**
+**OSXPhotos has been minimally tested with macOS Tahoe (macOS 26 developer beta) but new beta versions may break osxphotos support. If you encounter problems with macOS 26, please open an issue.**
 
 | macOS Version     | macOS name | Photos.app version  |
 | ----------------- |------------|:--------------------|
-| 15.0              | Sequoia    | 10.0 (beta support) |
+| 26.0              | Tahoe      | 11.0 (not yet tested) ❌|
+| 26.0 (beta)       | Tahoe      | 11.0 (alpha support)|
+| 15.0 - 15.6       | Sequoia    | 10.0 ✅             |
 | 14.0 - 14.6       | Sonoma     | 9.0 ✅              |
 | 13.0 - 13.6       | Ventura    | 8.0 ✅              |
 | 12.0 - 12.7       | Monterey   | 7.0 ✅              |
@@ -64,7 +64,7 @@ This package will read Photos databases for any supported version on any support
 
 Requires python >= `3.10`, <= `3.13`.
 
-For macOS 15.0 / Sequoia developer preview, alpha support is provided (very preliminary, not guaranteed to work). Not all features of osxphotos have been tested and some features may not work. If you encounter issues, please open an issue on GitHub.
+For macOS 26.0 / Tahoe developer preview, alpha support is provided (very preliminary, not guaranteed to work). Not all features of osxphotos have been tested and some features may not work. If you encounter issues, please open an issue on GitHub.
 
 ## Installation
 
@@ -88,10 +88,16 @@ uv self update
 * Type the following into Terminal:
 
 ```bash
-uv tool install --python 3.12 osxphotos
+uv tool install --python 3.13 osxphotos
 ```
 
 * Now you should be able to run `osxphotos` by typing: `osxphotos`
+
+**Note**: If you encounter errors during installation on older versions of macOS, try using an older version of python, for example, on macOS 12.7, you must use python 3.11:
+
+```bash
+uv tool install osxphotos --python 3.11
+```
 
 Once you've installed osxphotos with `uv`, to upgrade to the latest version:
 
@@ -99,7 +105,20 @@ Once you've installed osxphotos with `uv`, to upgrade to the latest version:
 uv tool upgrade osxphotos
 ```
 
-If you want to try `osxphotos` without installing it, you can run `uv tool run --python 3.12 osxphotos` or `uvx --python 3.12 osxphotos`.
+If you want to try `osxphotos` without installing it, you can run `uv tool run --python 3.13 osxphotos` or `uvx --python 3.13 osxphotos`. On older versions of macOS, you may need to use an older version of python: `uv tool run --python 3.11 osxphotos` or `uvx --python 3.11 osxphotos`.
+
+
+### Installation using Brew
+
+You can install `osxphotos` via Homebrew
+
+```
+# Add the tap
+brew tap RhetTbull/osxphotos
+
+# Install osxphotos
+brew install osxphotos
+```
 
 ### Installation using pip
 
@@ -119,17 +138,7 @@ If you use the [MacPorts](https://www.macports.org) package manager on a Mac:
 
 ### Installation on Linux
 
-At least one of the Linux-specific python packages normally installed on Linux may cause an error during installation with `pip` or `pipx`. If you encounter an error similar to: `pip._vendor.packaging.version.InvalidVersion: Invalid version: '6.5.0-1022-generic`, you should still be able to install osxphotos by creating and activating a virtual environment:
-
-```bash
-python3 -m venv .venv-osxphotos
-source .venv-osxphotos/bin/activate
-python3 -m pip install osxphotos
-```
-
-To use osxphotos you will need to ensure the venv is activated using `source .venv-osxphotos/bin/activate`.
-
-You may name the virtual environment anything you want; `.venv-osxphotos` is used in this example to make it clear the virtual environment is used by osxphotos and to avoid conflict with other virtual environments which, by convention, are often named `.venv` or `venv`.
+At least one of the Linux-specific python packages normally installed on Linux may cause an error during installation with `pip` or `pipx`. If you encounter an error similar to: `pip._vendor.packaging.version.InvalidVersion: Invalid version: '6.5.0-1022-generic`, you should still be able to install osxphotos using the `uv` installation instructions above.
 
 ### Installation from git repository
 
@@ -359,7 +368,7 @@ If your photos are organized in folders and albums in Photos you can preserve th
 
 `osxphotos export /path/to/export --directory "{folder_album}"`
 
-Photos can belong to more than one album.  In this case, the template field `{folder_album}` will expand to all the album names that the photo belongs to.  For example, if a photo belongs to the albums `Vacation` and `Travel`, the template field `{folder_album}` would expand to `Vacation`, `Travel`.  If the photo belongs to no albums, the template field `{folder_album}` would expand to "_" (the default value).  
+Photos can belong to more than one album.  In this case, the template field `{folder_album}` will expand to all the album names that the photo belongs to.  For example, if a photo belongs to the albums `Vacation` and `Travel`, the template field `{folder_album}` would expand to `Vacation`, `Travel`.  If the photo belongs to no albums, the template field `{folder_album}` would expand to "_" (the default value).
 
 All template fields including `{folder_album}` can be further filtered using a number of different filters.  To convert all directory names to lower case for example, use the `lower` filter:
 
@@ -380,8 +389,8 @@ By default, osxphotos will use the original filename of the photo when exporting
 The above command will export photos using the title.  Note that you don't need to specify the extension as part of the `--filename` template as osxphotos will automatically add the correct file extension.  Some photos might not have a title so in this case, you could use the default value feature to specify a different name for these photos.  For example, to use the title as the filename, but if no title is specified, use the original filename instead:
 
     osxphotos export /path/to/export --filename "{title,{original_name}}"
-                                                  │    ││  │ 
-                                                  │    ││  │ 
+                                                  │    ││  │
+                                                  │    ││  │
          Use photo's title as the filename <──────┘    ││  │
                                                        ││  │
                 Value after comma will be used <───────┘│  │
@@ -395,8 +404,8 @@ The above command will export photos using the title.  Note that you don't need 
 The osxphotos template system also allows for limited conditional logic of the type "If a condition is true then do one thing, otherwise, do a different thing". For example, you can use the `--filename` option to name files that are marked as "Favorites" in Photos differently than other files. For example, to add a "#" to the name of every photo that's a favorite:
 
     osxphotos export /path/to/export --filename "{original_name}{favorite?#,}"
-                                                  │              │       │││ 
-                                                  │              │       │││ 
+                                                  │              │       │││
+                                                  │              │       │││
          Use photo's original name as filename <──┘              │       │││
                                                                  │       │││
               'favorite' is True if photo is a Favorite, <───────┘       │││
@@ -452,7 +461,7 @@ All the above commands operate on the default Photos library.  Most users only u
 
 #### Missing photos
 
-osxphotos works by copying photos out of the Photos library folder to export them.  You may see osxphotos report that one or more photos are missing and thus could not be exported.  One possible reason for this is that you are using iCloud to synch your Photos library and Photos either hasn't yet synched the cloud library to the local Mac or you have Photos configured to "Optimize Mac Storage" in Photos Preferences. Another reason is that even if you have Photos configured to download originals to the Mac, Photos does not always download photos from shared albums or original screenshots to the Mac.  
+osxphotos works by copying photos out of the Photos library folder to export them.  You may see osxphotos report that one or more photos are missing and thus could not be exported.  One possible reason for this is that you are using iCloud to synch your Photos library and Photos either hasn't yet synched the cloud library to the local Mac or you have Photos configured to "Optimize Mac Storage" in Photos Preferences. Another reason is that even if you have Photos configured to download originals to the Mac, Photos does not always download photos from shared albums or original screenshots to the Mac.
 
 If you encounter missing photos you can tell osxphotos to download the missing photos from iCloud using the `--download-missing` option.  `--download-missing` uses AppleScript to communicate with Photos and tell it to download the missing photos.  Photos' AppleScript interface is somewhat buggy and you may find that Photos crashes.  In this case, osxphotos will attempt to restart Photos to resume the download process.  There's also an experimental `--use-photokit` option that will communicate with Photos using a different "PhotoKit" interface.  This option must be used together with `--download-missing`:
 
@@ -482,12 +491,12 @@ This will write basic metadata such as keywords, persons, and GPS location to th
 
     osxphotos export /path/to/export --exiftool --keyword-template "{folder_album(>)}"
                                                                      │            │
-                                                                     │            │ 
-                           folder_album results in the folder(s)  <──┘            │    
-                           and album a photo is contained in                      │  
-                                                                                  │     
-                           The value in () is used as the path separator  <───────┘     
-                           for joining the folders and albums.  For example, 
+                                                                     │            │
+                           folder_album results in the folder(s)  <──┘            │
+                           and album a photo is contained in                      │
+                                                                                  │
+                           The value in () is used as the path separator  <───────┘
+                           for joining the folders and albums.  For example,
                            if photo is in Folder1/Folder2/Album, (>) produces
                            "Folder1>Folder2>Album" which some programs, such as
                            Lightroom Classic, treat as hierarchical keywords
@@ -516,7 +525,7 @@ Another way to export metadata about your photos is through the use of sidecar f
 
 `osxphotos export /path/to/export --sidecar XMP`
 
-Unlike `--exiftool`, you do not need to install exiftool to use the `--sidecar` feature.  Many of the same configuration options that apply to `--exiftool` to modify metadata, for example, `--keyword-template` can also be used with `--sidecar`.  
+Unlike `--exiftool`, you do not need to install exiftool to use the `--sidecar` feature.  Many of the same configuration options that apply to `--exiftool` to modify metadata, for example, `--keyword-template` can also be used with `--sidecar`.
 
 Sidecar files are named "photoname.ext.sidecar_ext".  For example, if the photo is named `IMG_1234.JPG` and the sidecar format is XMP, the sidecar would be named `IMG_1234.JPG.XMP`.  Some applications expect the sidecar in this case to be named `IMG_1234.XMP`.  You can use the `--sidecar-drop-ext` option to force osxphotos to name the sidecar files in this manner:
 
@@ -623,21 +632,21 @@ In the template string above, `{newline}` instructs osxphotos to insert a new li
 Explanation of the template string:
 
     {title,}{title?{descr?{newline},},}{descr,}
-     │           │      │ │       │ │  │ 
-     │           │      │ │       │ │  │ 
-     └──> insert title (or nothing if no title) 
+     │           │      │ │       │ │  │
+     │           │      │ │       │ │  │
+     └──> insert title (or nothing if no title)
                  │      │ │       │ │  │
                  └───> is there a title?
                         │ │       │ │  │
-                        └───> if so, is there a description? 
+                        └───> if so, is there a description?
                           │       │ │  │
-                          └───> if so, insert new line 
+                          └───> if so, insert new line
                                   │ │  │
                                   └───> if descr is blank, insert nothing
-                                    │  │ 
+                                    │  │
                                     └───> if title is blank, insert nothing
                                        │
-                                       └───> finally, insert description 
+                                       └───> finally, insert description
                                              (or nothing if no description)
 
 In this example, `title?` demonstrates use of the boolean (True/False) feature of the template system.  `title?` is read as "Is the title True (or not blank/empty)?  If so, then the value immediately following the `?` is used in place of `title`.  If `title` is blank, then the value immediately following the comma is used instead.  The format for boolean fields is `field?value if true,value if false`.  Either `value if true` or `value if false` may be blank, in which case a blank string ("") is used for the value and both may also be an entirely new template string as seen in the above example.  Using this format, template strings may be nested inside each other to form complex `if-then-else` statements.
@@ -662,13 +671,13 @@ The configuration file is a plain text file in [TOML](https://toml.io/en/) forma
 
 #### Run commands on exported photos for post-processing
 
-You can use the `--post-command` option to run one or more commands against exported files. The `--post-command` option takes two arguments: CATEGORY and COMMAND.  CATEGORY is a string that describes which category of file to run the command against.  The available categories are described in the help text available via: `osxphotos help export`. For example, the `exported` category includes all exported photos and the `skipped` category includes all photos that were skipped when running export with `--update`.  COMMAND is an osxphotos template string which will be rendered then passed to the shell for execution.  
+You can use the `--post-command` option to run one or more commands against exported files. The `--post-command` option takes two arguments: CATEGORY and COMMAND.  CATEGORY is a string that describes which category of file to run the command against.  The available categories are described in the help text available via: `osxphotos help export`. For example, the `exported` category includes all exported photos and the `skipped` category includes all photos that were skipped when running export with `--update`.  COMMAND is an osxphotos template string which will be rendered then passed to the shell for execution.
 
 For example, the following command generates a log of all exported files and their associated keywords:
 
 `osxphotos export /path/to/export --post-command exported "echo {shell_quote,{filepath}{comma}{,+keyword,}} >> {shell_quote,{export_dir}/exported.txt}"`
 
-The special template field `{shell_quote}` ensures a string is properly quoted for execution in the shell.  For example, it's possible that a file path or keyword in this example has a space in the value and if not properly quoted, this would cause an error in the execution of the command. When running commands, the template `{filepath}` is set to the full path of the exported file and `{export_dir}` is set to the full path of the base export directory.  
+The special template field `{shell_quote}` ensures a string is properly quoted for execution in the shell.  For example, it's possible that a file path or keyword in this example has a space in the value and if not properly quoted, this would cause an error in the execution of the command. When running commands, the template `{filepath}` is set to the full path of the exported file and `{export_dir}` is set to the full path of the base export directory.
 
 Explanation of the template string:
 
@@ -679,7 +688,7 @@ Explanation of the template string:
                   │         │      │        │
                   └───> filepath of the exported file
                            │       │        │
-                           └───> insert a comma 
+                           └───> insert a comma
                                    │        │
                                    └───> join the list of keywords together with a ","
                                             │
@@ -893,12 +902,21 @@ Options:
                                   photos matching any person
   --album ALBUM                   Search for photos in album ALBUM. If more than
                                   one album, treated as "OR", e.g. find photos
-                                  matching any album
+                                  matching any album. For albums in a folder,
+                                  specify the entire folder path, e.g. 'My
+                                  Folder/My Album'. If album name contains a
+                                  forward slash, use double slashes to escape
+                                  it, e.g. 'Travel//2025' for an album named
+                                  'Travel/2025'.
   --folder FOLDER                 Search for photos in an album in folder
                                   FOLDER. If more than one folder, treated as
-                                  "OR", e.g. find photos in any FOLDER.  Only
-                                  searches top level folders (e.g. does not look
-                                  at subfolders)
+                                  "OR", e.g. find photos in any FOLDER. To
+                                  search subfolders, specify the entire folder
+                                  path, e.g. 'My Folder/Subfolder'. If folder
+                                  name contains a forward slash, use double
+                                  slashes to escape it, e.g. 'My
+                                  Folder//Subfolder' for a folder named 'My
+                                  Folder/Subfolder'.
   --name FILENAME                 Search for photos with filename matching
                                   FILENAME. If more than one --name options is
                                   specified, they are treated as "OR", e.g. find
@@ -927,8 +945,8 @@ Options:
                                   matching any label
   --uti UTI                       Search for photos whose uniform type
                                   identifier (UTI) matches UTI
-  -i, --ignore-case               Case insensitive search for title,
-                                  description, place, keyword, person, or album.
+  -i, --ignore-case               Case insensitive search when used with other
+                                  query options.
   --edited                        Search for photos that have been edited.
   --not-edited                    Search for photos that have not been edited.
   --external-edit                 Search for photos edited in external editor.
@@ -1003,9 +1021,9 @@ Options:
   --added-in-last TIME_DELTA      Search for items added to the library in the
                                   last TIME_DELTA, where TIME_DELTA is a string
                                   like '12 hrs', '1 day', '1d', '1 week',
-                                  '2weeks', '1 month', '1 year'. for example,
-                                  `--added-in-last 7d` and `--added-in-last '1
-                                  week'` are equivalent. months are assumed to
+                                  '2weeks', '1 month', '1 year'. for example, '
+                                  --added-in-last 7d' and '--added-in-last '1
+                                  week'' are equivalent. months are assumed to
                                   be 30 days and years are assumed to be 365
                                   days. Common English abbreviations are
                                   accepted, e.g. d, day, days or m, min,
@@ -1085,18 +1103,18 @@ Options:
   --exif EXIF_TAG VALUE           Search for photos where EXIF_TAG exists in
                                   photo's EXIF data and contains VALUE. For
                                   example, to find photos created by Adobe
-                                  Photoshop: `--exif Software 'Adobe Photoshop'
-                                  `or to find all photos shot on a Canon camera:
-                                  `--exif Make Canon`. EXIF_TAG can be any valid
+                                  Photoshop: '--exif Software 'Adobe Photoshop'
+                                  'or to find all photos shot on a Canon camera:
+                                  '--exif Make Canon'. EXIF_TAG can be any valid
                                   exiftool tag, with or without group name, e.g.
-                                  `EXIF:Make` or `Make`. To use --exif, exiftool
+                                  'EXIF:Make' or 'Make'. To use --exif, exiftool
                                   must be installed and in the path.
   --query-eval CRITERIA           Evaluate CRITERIA to filter photos. CRITERIA
                                   will be evaluated in context of the following
-                                  python list comprehension: `photos = [photo
-                                  for photo in photos if CRITERIA]` where photo
-                                  represents a PhotoInfo object. For example:
-                                  `--query-eval photo.favorite` returns all
+                                  python list comprehension: 'photos = [photo
+                                  for photo in photos if CRITERIA]' where photo
+                                  represents a PhotoInfo object. For example: '
+                                  --query-eval photo.favorite' returns all
                                   photos that have been favorited and is
                                   equivalent to --favorite. You may specify more
                                   than one CRITERIA by using --query-eval
@@ -1105,9 +1123,9 @@ Options:
                                   https://rhettbull.github.io/osxphotos/ for
                                   additional documentation on the PhotoInfo
                                   class.
-  --query-function filename.py::function
+  --query-function filename.py:function
                                   Run function to filter photos. Use this in
-                                  format: --query-function filename.py::function
+                                  format: --query-function filename.py:function
                                   where filename.py is a python file you've
                                   created and function is the name of the
                                   function in the python file you want to call.
@@ -1338,7 +1356,7 @@ Options:
                                   SIDECAR_FILENAME_TEMPLATE must be a valid
                                   template string (see Templating System in
                                   help) which will be rendered to generate the
-                                  filename of the sidecar file. The `{filepath}`
+                                  filename of the sidecar file. The '{filepath}'
                                   template variable may be used in the
                                   SIDECAR_FILENAME_TEMPLATE to refer to the
                                   filename of the photo being exported. OPTIONS
@@ -1364,20 +1382,19 @@ Options:
                                   file with extension .xmp using a template file
                                   named 'sidecar.mako' and write a sidecar for
                                   skipped photos and strip blank lines but not
-                                  whitespace: `--sidecar-template sidecar.mako
-                                  '{filepath}.xmp' write_skipped,strip_lines`.
+                                  whitespace: '--sidecar-template sidecar.mako
+                                  '{filepath}.xmp' write_skipped,strip_lines'.
                                   To do the same but to drop the photo extension
-                                  from the sidecar filename: `--sidecar-template
+                                  from the sidecar filename: '--sidecar-template
                                   sidecar.mako
-                                  '{filepath.parent}/{filepath.stem}.xmp'
-                                  write_skipped,strip_lines`. If you are not
+                                  "{filepath.parent}/{filepath.stem}.xmp"
+                                  write_skipped,strip_lines'. If you are not
                                   passing any options, you must pass 'none' as
-                                  the last argument to --sidecar-template:
-                                  `--sidecar-template sidecar.mako
-                                  '{filepath}.xmp' none`. For an example Mako
-                                  file see https://raw.githubusercontent.com/Rhe
-                                  tTbull/osxphotos/main/examples/custom_sidecar.
-                                  mako
+                                  the last argument to --sidecar-template: '--
+                                  sidecar-template sidecar.mako "{filepath}.xmp"
+                                  none'. For an example Mako file see https://ra
+                                  w.githubusercontent.com/RhetTbull/osxphotos/ma
+                                  in/examples/custom_sidecar.mako
   --exiftool                      Use exiftool to write metadata directly to
                                   exported photos. To use this option, exiftool
                                   must be installed and in the path.  exiftool
@@ -1402,8 +1419,8 @@ Options:
   --exiftool-path EXIFTOOL_PATH   Optionally specify path to exiftool; if not
                                   provided, will look for exiftool in $PATH.
   --exiftool-option OPTION        Optional flag/option to pass to exiftool when
-                                  using --exiftool. For example, --exiftool-
-                                  option '-m' to ignore minor warnings. Specify
+                                  using --exiftool. For example, "--exiftool-
+                                  option '-m'" to ignore minor warnings. Specify
                                   these as you would on the exiftool command
                                   line. See exiftool docs at
                                   https://exiftool.org/exiftool_pod.html for
@@ -1561,22 +1578,22 @@ Options:
                                   certain. To prevent files not generated by
                                   osxphotos from being deleted, you may specify
                                   one or more rules in a file named
-                                  `.osxphotos_keep` in the export directory.
+                                  '.osxphotos_keep' in the export directory.
                                   This file uses the same format as a .gitignore
                                   file and should contain one rule per line;
-                                  lines starting with a `#` will be ignored.
+                                  lines starting with a '#' will be ignored.
                                   Reference https://git-
                                   scm.com/docs/gitignore#_pattern_format for
                                   details. In addition to the standard
                                   .gitignore rules, the rules may also be the
                                   absolute path to a file or directory. For
                                   example if export destination is
-                                  `/Volumes/Photos` and you want to keep all
-                                  `.txt` files, in the top level of the export
-                                  directory, you can specify `/*.txt"` in the
+                                  '/Volumes/Photos' and you want to keep all
+                                  '.txt' files, in the top level of the export
+                                  directory, you can specify '/*.txt' in the
                                   .osxphotos_keep file. If you want to keep all
-                                  `.txt` files in the export directory and all
-                                  subdirectories, you can specify `**/*.txt`. If
+                                  '.txt' files in the export directory and all
+                                  subdirectories, you can specify '**/*.txt'. If
                                   present, the .osxphotos_keep file will be read
                                   after the export is completed and any rules
                                   found in the file will be added to the list of
@@ -1593,24 +1610,24 @@ Options:
                                   .gitignore rules, KEEP_RULE may also be the
                                   absolute path to a file or directory. For
                                   example if export destination is
-                                  `/Volumes/Photos` and you want to keep all
-                                  `.txt` files, in the top level of the export
-                                  directory, you can specify `--keep "/*.txt"`.
-                                  If you want to keep all `.txt` files in the
+                                  '/Volumes/Photos' and you want to keep all
+                                  '.txt' files, in the top level of the export
+                                  directory, you can specify '--keep "*.txt". If
+                                  you want to keep all '.txt' files in the
                                   export directory and all subdirectories, you
-                                  can specify `--keep "**/*.txt"`. If wild card
+                                  can specify '--keep "**/*.txt"'. If wild card
                                   is used, KEEP_RULE must be enclosed in quotes
                                   to prevent the shell from expanding the
                                   wildcard. --keep may be repeated to keep
                                   additional files/directories. Rules may also
-                                  be included in a file named `.osxphotos_keep`
+                                  be included in a file named '.osxphotos_keep'
                                   in the export directory. If present, this file
                                   will be read after the export is completed and
                                   any rules found in the file will be added to
                                   the list of rules to keep. This file uses the
                                   same format as a .gitignore file and should
                                   contain one rule per line; lines starting with
-                                  a `#` will be ignored.
+                                  a '#' will be ignored.
   --add-exported-to-album ALBUM   Add all exported photos to album ALBUM in
                                   Photos. Album ALBUM will be created if it
                                   doesn't exist.  All exported photos will be
@@ -1648,18 +1665,18 @@ Options:
                                   option with different arguments. See also
                                   --post-command-error and --post-function.See
                                   Post Command below.
-  --post-command-error ACTION     Specify either `continue` or `break` for
+  --post-command-error ACTION     Specify either 'continue' or 'break' for
                                   ACTION to control behavior when a post-command
-                                  fails. If `continue`, osxphotos will log the
-                                  error and continue processing. If `break`,
+                                  fails. If 'continue', osxphotos will log the
+                                  error and continue processing. If 'break',
                                   osxphotos will stop processing any additional
                                   --post-command commands for the current photo
                                   but will continue with the export. Without
                                   --post-command-error, osxphotos will abort the
                                   export if a post-command encounters an error.
-  --post-function filename.py::function
+  --post-function filename.py:function
                                   Run function on exported files. Use this in
-                                  format: --post-function filename.py::function
+                                  format: --post-function filename.py:function
                                   where filename.py is a python file you've
                                   created and function is the name of the
                                   function in the python file you want to call.
@@ -1670,7 +1687,7 @@ Options:
                                   repeating the '--post-function' option with
                                   different arguments. You may also specify a
                                   post function using a URL in format --post-
-                                  function 'https://path/to/module.py::function'
+                                  function 'https://path/to/module.py:function'
                                   See Post Function below.
   --exportdb EXPORTDB_FILE        Specify alternate path for database file which
                                   stores state information for export and
@@ -1681,7 +1698,12 @@ Options:
                                   will be saved to the specified file.
   --ramdb                         Copy export database to memory during export;
                                   will improve performance when exporting over a
-                                  network or slow disk. See also --checkpoint.
+                                  network or slow disk. Note: osxphotos will
+                                  automatically detect if export database is on
+                                  a network volume and force use of --ramdb. See
+                                  also --exportdb to specifiy an alternate
+                                  location for the export database and also
+                                  --checkpoint.
   --checkpoint NUMBER_OF_PHOTOS   When used with --ramdb, periodically save the
                                   export database back to disk after processing
                                   NUMBER_OF_PHOTOS. When using --ramdb, the
@@ -1692,7 +1714,7 @@ Options:
                                   export database is large. This is an advanced
                                   feature for those who need to fine-tune the
                                   behavior of osxphotos.  [x>=0]
-  -F, --ignore-exportdb           If exporting to a directory that already
+  -F, --ignore-exportdb           1) If exporting to a directory that already
                                   contains an export database and --update is
                                   not specified, do not prompt to continue but
                                   instead continue the export. Normally, if you
@@ -1704,8 +1726,13 @@ Options:
                                   this prompt and continue the export. The
                                   resulting export database will contain the
                                   combined state of both export sets. Short
-                                  option is '-F' (mnemonic: force export). See
-                                  also --update.
+                                  option is '-F' (mnemonic: force export). 2)
+                                  For advanced use: when used with --update,
+                                  --ignore-exportdb will skip searching for
+                                  export database files in the parent or child
+                                  of the export directory; thus avoiding what
+                                  could be a time comsuming search. 3) See also
+                                  --update.
   --no-exportdb                   Do not create an export database. This exports
                                   all photos in the export set but does not save
                                   any state information in the osxphotos export
@@ -1735,14 +1762,14 @@ Options:
                                   probably don't need. This may be useful when
                                   exporting from a library on a very slow
                                   external disk. In this case, you could copy
-                                  the `/database` folder from the Photos library
-                                  to the internal diskand use `--alt-db` to
+                                  the '/database' folder from the Photos library
+                                  to the internal diskand use '--alt-db' to
                                   specify the path to the database file on the
-                                  internal disk. then use `--library` to specify
+                                  internal disk. then use '--library' to specify
                                   the path to the Photos library root on the
-                                  external disk. For example: `--library
+                                  external disk. For example: '--library
                                   /Volumes/ExternalDisk/Photos.photoslibrary
-                                  --alt-db /path/to/database/Photos.sqlite`
+                                  --alt-db /path/to/database/Photos.sqlite'
   --load-config CONFIG_FILE       Load options from file as written with --save-
                                   config. This allows you to save a complex
                                   export command to file for later reuse. For
@@ -1772,7 +1799,7 @@ Options:
                                   depending on system dark mode setting.
   -h, --help                      Show this message and exit.
 
-                                    Export                                    
+                                    Export
 
 When exporting photos, osxphotos creates a database in the top-level export
 folder called '.osxphotos_export.db'.  This database preserves state
@@ -1804,7 +1831,7 @@ option to re-export the entire library thus rebuilding the
 '.osxphotos_export.db' database.
 
 
-                             Extended Attributes                              
+                             Extended Attributes
 
     Some options (currently '--finder-tag-template', '--finder-tag-keywords',
     '-xattr-template') write     additional metadata accessible by Spotlight
@@ -1872,300 +1899,300 @@ For additional information on extended attributes see: https://developer.apple
 _keys
 
 
-                              Templating System                               
+                              Templating System
 
 
-The templating system converts one or template statements, written in         
-osxphotos metadata templating language, to one or more rendered values using  
-information from the photo being processed.                                   
+The templating system converts one or template statements, written in
+osxphotos metadata templating language, to one or more rendered values using
+information from the photo being processed.
 
-In its simplest form, a template statement has the form: "{template_field}",  
-for example "{title}" which would resolve to the title of the photo.          
+In its simplest form, a template statement has the form: "{template_field}",
+for example "{title}" which would resolve to the title of the photo.
 
-Template statements may contain one or more modifiers.  The full syntax is:   
+Template statements may contain one or more modifiers.  The full syntax is:
 
-"pretext{delim+template_field:subfield(field_arg)|filter[find,replace]        
-conditional&combine_value?bool_value,default}posttext"                        
+"pretext{delim+template_field:subfield(field_arg)|filter[find,replace]
+conditional&combine_value?bool_value,default}posttext"
 
-Template statements are white-space sensitive meaning that white space        
-(spaces, tabs) changes the meaning of the template statement.                 
+Template statements are white-space sensitive meaning that white space
+(spaces, tabs) changes the meaning of the template statement.
 
-pretext and posttext are free form text.  For example, if a photo has title   
-"My Photo Title" the template statement "The title of the photo is {title}",  
-resolves to "The title of the photo is My Photo Title".  The pretext in this  
-example is "The title if the photo is " and the template_field is {title}.    
+pretext and posttext are free form text.  For example, if a photo has title
+"My Photo Title" the template statement "The title of the photo is {title}",
+resolves to "The title of the photo is My Photo Title".  The pretext in this
+example is "The title if the photo is " and the template_field is {title}.
 
-delim: optional delimiter string to use when expanding multi-valued template  
-values in-place                                                               
+delim: optional delimiter string to use when expanding multi-valued template
+values in-place
 
-+: If present before template name, expands the template in place.  If delim  
-not provided, values are joined with no delimiter.                            
++: If present before template name, expands the template in place.  If delim
+not provided, values are joined with no delimiter.
 
-e.g. if Photo keywords are ["foo","bar"]:                                     
+e.g. if Photo keywords are ["foo","bar"]:
 
- • "{keyword}" renders to "foo", "bar"                                        
- • "{,+keyword}" renders to: "foo,bar"                                        
- • "{; +keyword}" renders to: "foo; bar"                                      
- • "{+keyword}" renders to "foobar"                                           
+ • "{keyword}" renders to "foo", "bar"
+ • "{,+keyword}" renders to: "foo,bar"
+ • "{; +keyword}" renders to: "foo; bar"
+ • "{+keyword}" renders to "foobar"
 
 template_field: The template field to resolve.  See Template Substitutions for
-full list of template fields.                                                 
+full list of template fields.
 
-:subfield: Some templates have sub-fields, For example, {exiftool:IPTC:Make}; 
-the template_field is exiftool and the sub-field is IPTC:Make.                
+:subfield: Some templates have sub-fields, For example, {exiftool:IPTC:Make};
+the template_field is exiftool and the sub-field is IPTC:Make.
 
-(field_arg): optional arguments to pass to the field; for example, with       
-{folder_album} this is used to pass the path separator used for joining       
-folders and albums when rendering the field (default is "/" for               
-{folder_album}).                                                              
+(field_arg): optional arguments to pass to the field; for example, with
+{folder_album} this is used to pass the path separator used for joining
+folders and albums when rendering the field (default is "/" for
+{folder_album}).
 
-|filter: You may optionally append one or more filter commands to the end of  
-the template field using the vertical pipe ('|') symbol.  Filters may be      
-combined, separated by '|' as in: {keyword|capitalize|parens}.                
+|filter: You may optionally append one or more filter commands to the end of
+the template field using the vertical pipe ('|') symbol.  Filters may be
+combined, separated by '|' as in: {keyword|capitalize|parens}.
 
-Valid filters are:                                                            
+Valid filters are:
 
- • lower: Convert value to lower case, e.g. 'Value' => 'value'.               
- • upper: Convert value to upper case, e.g. 'Value' => 'VALUE'.               
- • strip: Strip whitespace from beginning/end of value, e.g. ' Value ' =>     
-   'Value'.                                                                   
- • titlecase: Convert value to title case, e.g. 'my value' => 'My Value'.     
+ • lower: Convert value to lower case, e.g. 'Value' => 'value'.
+ • upper: Convert value to upper case, e.g. 'Value' => 'VALUE'.
+ • strip: Strip whitespace from beginning/end of value, e.g. ' Value ' =>
+   'Value'.
+ • titlecase: Convert value to title case, e.g. 'my value' => 'My Value'.
  • capitalize: Capitalize first word of value and convert other words to lower
-   case, e.g. 'MY VALUE' => 'My value'.                                       
- • braces: Enclose value in curly braces, e.g. 'value => '{value}'.           
- • parens: Enclose value in parentheses, e.g. 'value' => '(value')            
- • brackets: Enclose value in brackets, e.g. 'value' => '[value]'             
- • shell_quote: Quotes the value for safe usage in the shell, e.g. My         
-   file.jpeg => 'My file.jpeg'; only adds quotes if needed.                   
- • function: Run custom python function to filter value; use in format        
-   'function:/path/to/file.py::function_name'. See example at                 
+   case, e.g. 'MY VALUE' => 'My value'.
+ • braces: Enclose value in curly braces, e.g. 'value => '{value}'.
+ • parens: Enclose value in parentheses, e.g. 'value' => '(value')
+ • brackets: Enclose value in brackets, e.g. 'value' => '[value]'
+ • shell_quote: Quotes the value for safe usage in the shell, e.g. My
+   file.jpeg => 'My file.jpeg'; only adds quotes if needed.
+ • function: Run custom python function to filter value; use in format
+   'function:/path/to/file.py::function_name'. See example at
    https://github.com/RhetTbull/osxphotos/blob/master/examples/template_filter
-   .py                                                                        
- • split(x): Split value into a list of values using x as delimiter, e.g.     
-   'value1;value2' => ['value1', 'value2'] if used with split(;).             
- • autosplit: Automatically split delimited string into separate values; will 
+   .py
+ • split(x): Split value into a list of values using x as delimiter, e.g.
+   'value1;value2' => ['value1', 'value2'] if used with split(;).
+ • autosplit: Automatically split delimited string into separate values; will
    split strings delimited by comma, semicolon, or space, e.g. 'value1,value2'
-   => ['value1', 'value2'].                                                   
+   => ['value1', 'value2'].
  • chop(x): Remove x characters off the end of value, e.g. chop(1): 'Value' =>
    'Valu'; when applied to a list, chops characters from each list value, e.g.
-   chop(1): ['travel', 'beach']=> ['trave', 'beac'].                          
- • chomp(x): Remove x characters from the beginning of value, e.g. chomp(1):  
+   chop(1): ['travel', 'beach']=> ['trave', 'beac'].
+ • chomp(x): Remove x characters from the beginning of value, e.g. chomp(1):
    ['Value'] => ['alue']; when applied to a list, removes characters from each
-   list value, e.g. chomp(1): ['travel', 'beach']=> ['ravel', 'each'].        
- • sort: Sort list of values, e.g. ['c', 'b', 'a'] => ['a', 'b', 'c'].        
- • rsort: Sort list of values in reverse order, e.g. ['a', 'b', 'c'] => ['c', 
-   'b', 'a'].                                                                 
- • reverse: Reverse order of values, e.g. ['a', 'b', 'c'] => ['c', 'b', 'a']. 
+   list value, e.g. chomp(1): ['travel', 'beach']=> ['ravel', 'each'].
+ • sort: Sort list of values, e.g. ['c', 'b', 'a'] => ['a', 'b', 'c'].
+ • rsort: Sort list of values in reverse order, e.g. ['a', 'b', 'c'] => ['c',
+   'b', 'a'].
+ • reverse: Reverse order of values, e.g. ['a', 'b', 'c'] => ['c', 'b', 'a'].
  • uniq: Remove duplicate values, e.g. ['a', 'b', 'c', 'b', 'a'] => ['a', 'b',
-   'c'].                                                                      
- • join(x): Join list of values with delimiter x, e.g. join(,): ['a', 'b',    
-   'c'] => 'a,b,c'; the DELIM option functions similar to join(x) but with    
-   DELIM, the join happens before being passed to any filters.May optionally  
-   be used without an argument, that is 'join()' which joins values together  
-   with no delimiter. e.g. join(): ['a', 'b', 'c'] => 'abc'.                  
- • append(x): Append x to list of values, e.g. append(d): ['a', 'b', 'c'] =>  
-   ['a', 'b', 'c', 'd'].                                                      
- • prepend(x): Prepend x to list of values, e.g. prepend(d): ['a', 'b', 'c']  
-   => ['d', 'a', 'b', 'c'].                                                   
- • appends(x): Append s[tring] Append x to each value of list of values, e.g. 
-   appends(d): ['a', 'b', 'c'] => ['ad', 'bd', 'cd'].                         
- • prepends(x): Prepend s[tring] x to each value of list of values, e.g.      
-   prepends(d): ['a', 'b', 'c'] => ['da', 'db', 'dc'].                        
+   'c'].
+ • join(x): Join list of values with delimiter x, e.g. join(,): ['a', 'b',
+   'c'] => 'a,b,c'; the DELIM option functions similar to join(x) but with
+   DELIM, the join happens before being passed to any filters.May optionally
+   be used without an argument, that is 'join()' which joins values together
+   with no delimiter. e.g. join(): ['a', 'b', 'c'] => 'abc'.
+ • append(x): Append x to list of values, e.g. append(d): ['a', 'b', 'c'] =>
+   ['a', 'b', 'c', 'd'].
+ • prepend(x): Prepend x to list of values, e.g. prepend(d): ['a', 'b', 'c']
+   => ['d', 'a', 'b', 'c'].
+ • appends(x): Append s[tring] Append x to each value of list of values, e.g.
+   appends(d): ['a', 'b', 'c'] => ['ad', 'bd', 'cd'].
+ • prepends(x): Prepend s[tring] x to each value of list of values, e.g.
+   prepends(d): ['a', 'b', 'c'] => ['da', 'db', 'dc'].
  • remove(x): Remove x from list of values, e.g. remove(b): ['a', 'b', 'c'] =>
-   ['a', 'c'].                                                                
- • slice(start:stop:step): Slice list using same semantics as Python's list   
+   ['a', 'c'].
+ • slice(start:stop:step): Slice list using same semantics as Python's list
    slicing, e.g. slice(1:3): ['a', 'b', 'c', 'd'] => ['b', 'c']; slice(1:4:2):
-   ['a', 'b', 'c', 'd'] => ['b', 'd']; slice(1:): ['a', 'b', 'c', 'd'] =>     
-   ['b', 'c', 'd']; slice(:-1): ['a', 'b', 'c', 'd'] => ['a', 'b', 'c'];      
-   slice(::-1): ['a', 'b', 'c', 'd'] => ['d', 'c', 'b', 'a']. See also        
-   sslice().                                                                  
+   ['a', 'b', 'c', 'd'] => ['b', 'd']; slice(1:): ['a', 'b', 'c', 'd'] =>
+   ['b', 'c', 'd']; slice(:-1): ['a', 'b', 'c', 'd'] => ['a', 'b', 'c'];
+   slice(::-1): ['a', 'b', 'c', 'd'] => ['d', 'c', 'b', 'a']. See also
+   sslice().
  • sslice(start:stop:step): [s(tring) slice] Slice values in a list using same
-   semantics as Python's string slicing, e.g. sslice(1:3):'abcd => 'bc';      
-   sslice(1:4:2): 'abcd' => 'bd', etc. See also slice().                      
- • filter(x): Filter list of values using predicate x; for example,           
-   {folder_album|filter(contains Events)} returns only folders/albums         
-   containing the word 'Events' in their path.                                
- • int: Convert values in list to integer, e.g. 1.0 => 1. If value cannot be  
-   converted to integer, remove value from list. ['1.1', 'x'] => ['1']. See   
-   also float.                                                                
- • float: Convert values in list to floating point number, e.g. 1 => 1.0. If  
-   value cannot be converted to float, remove value from list. ['1', 'x'] =>  
-   ['1.0']. See also int.                                                     
+   semantics as Python's string slicing, e.g. sslice(1:3):'abcd => 'bc';
+   sslice(1:4:2): 'abcd' => 'bd', etc. See also slice().
+ • filter(x): Filter list of values using predicate x; for example,
+   '{folder_album|filter(contains Events)}' returns only folders/albums
+   containing the word 'Events' in their path.
+ • int: Convert values in list to integer, e.g. 1.0 => 1. If value cannot be
+   converted to integer, remove value from list. ['1.1', 'x'] => ['1']. See
+   also float.
+ • float: Convert values in list to floating point number, e.g. 1 => 1.0. If
+   value cannot be converted to float, remove value from list. ['1', 'x'] =>
+   ['1.0']. See also int.
 
-e.g. if Photo keywords are ["FOO","bar"]:                                     
+e.g. if Photo keywords are ["FOO","bar"]:
 
- • "{keyword|lower}" renders to "foo", "bar"                                  
- • "{keyword|upper}" renders to: "FOO", "BAR"                                 
- • "{keyword|capitalize}" renders to: "Foo", "Bar"                            
- • "{keyword|lower|parens}" renders to: "(foo)", "(bar)"                      
+ • "{keyword|lower}" renders to "foo", "bar"
+ • "{keyword|upper}" renders to: "FOO", "BAR"
+ • "{keyword|capitalize}" renders to: "Foo", "Bar"
+ • "{keyword|lower|parens}" renders to: "(foo)", "(bar)"
 
-e.g. if Photo description is "my description":                                
+e.g. if Photo description is "my description":
 
- • "{descr|titlecase}" renders to: "My Description"                           
+ • "{descr|titlecase}" renders to: "My Description"
 
-e.g. If Photo is in Album1 in Folder1:                                        
+e.g. If Photo is in Album1 in Folder1:
 
- • "{folder_album}" renders to ["Folder1/Album1"]                             
- • "{folder_album(>)}" renders to ["Folder1>Album1"]                          
- • "{folder_album()}" renders to ["Folder1Album1"]                            
+ • "{folder_album}" renders to ["Folder1/Album1"]
+ • "{folder_album(>)}" renders to ["Folder1>Album1"]
+ • "{folder_album()}" renders to ["Folder1Album1"]
 
-[find,replace]: optional text replacement to perform on rendered template     
-value.  For example, to replace "/" in an album name, you could use the       
-template "{album[/,-]}".  Multiple replacements can be made by appending "|"  
-and adding another find|replace pair.  e.g. to replace both "/" and ":" in    
-album name: "{album[/,-|:,-]}".  find/replace pairs are not limited to single 
-characters.  The "|" character cannot be used in a find/replace pair.         
+[find,replace]: optional text replacement to perform on rendered template
+value.  For example, to replace "/" in an album name, you could use the
+template "{album[/,-]}".  Multiple replacements can be made by appending "|"
+and adding another find|replace pair.  e.g. to replace both "/" and ":" in
+album name: "{album[/,-|:,-]}".  find/replace pairs are not limited to single
+characters.  The "|" character cannot be used in a find/replace pair.
 
-conditional: optional conditional expression that is evaluated as boolean     
-(True/False) for use with the ?bool_value modifier.  Conditional expressions  
-take the form 'not operator value' where not is an optional modifier that     
-negates the operator.  Note: the space before the conditional expression is   
+conditional: optional conditional expression that is evaluated as boolean
+(True/False) for use with the ?bool_value modifier.  Conditional expressions
+take the form 'not operator value' where not is an optional modifier that
+negates the operator.  Note: the space before the conditional expression is
 required if you use a conditional expression.  Valid comparison operators are:
 
- • contains: template field contains value, similar to python's in            
- • matches: template field contains exactly value, unlike contains: does not  
-   match partial matches                                                      
- • startswith: template field starts with value                               
- • endswith: template field ends with value                                   
- • <=: template field is less than or equal to value                          
- • >=: template field is greater than or equal to value                       
- • <: template field is less than value                                       
- • >: template field is greater than value                                    
- • ==: template field equals value                                            
- • !=: template field does not equal value                                    
+ • contains: template field contains value, similar to python's in
+ • matches: template field contains exactly value, unlike contains: does not
+   match partial matches
+ • startswith: template field starts with value
+ • endswith: template field ends with value
+ • <=: template field is less than or equal to value
+ • >=: template field is greater than or equal to value
+ • <: template field is less than value
+ • >: template field is greater than value
+ • ==: template field equals value
+ • !=: template field does not equal value
 
-The value part of the conditional expression is treated as a bare (unquoted)  
-word/phrase.  Multiple values may be separated by '|' (the pipe symbol).      
-value is itself a template statement so you can use one or more template      
-fields in value which will be resolved before the comparison occurs.          
+The value part of the conditional expression is treated as a bare (unquoted)
+word/phrase.  Multiple values may be separated by '|' (the pipe symbol).
+value is itself a template statement so you can use one or more template
+fields in value which will be resolved before the comparison occurs.
 
-For example:                                                                  
+For example:
 
- • {keyword matches Beach} resolves to True if 'Beach' is a keyword. It would 
-   not match keyword 'BeachDay'.                                              
- • {keyword contains Beach} resolves to True if any keyword contains the word 
-   'Beach' so it would match both 'Beach' and 'BeachDay'.                     
- • {photo.score.overall > 0.7} resolves to True if the photo's overall        
-   aesthetic score is greater than 0.7.                                       
- • {keyword|lower contains beach} uses the lower case filter to do            
-   case-insensitive matching to match any keyword that contains the word      
-   'beach'.                                                                   
- • {keyword|lower not contains beach} uses the not modifier to negate the     
-   comparison so this resolves to True if there is no keyword that matches    
-   'beach'.                                                                   
+ • {keyword matches Beach} resolves to True if 'Beach' is a keyword. It would
+   not match keyword 'BeachDay'.
+ • {keyword contains Beach} resolves to True if any keyword contains the word
+   'Beach' so it would match both 'Beach' and 'BeachDay'.
+ • {photo.score.overall > 0.7} resolves to True if the photo's overall
+   aesthetic score is greater than 0.7.
+ • {keyword|lower contains beach} uses the lower case filter to do
+   case-insensitive matching to match any keyword that contains the word
+   'beach'.
+ • {keyword|lower not contains beach} uses the not modifier to negate the
+   comparison so this resolves to True if there is no keyword that matches
+   'beach'.
 
-Examples: to export photos that contain certain keywords with the osxphotos   
-export command's --directory option:                                          
+Examples: to export photos that contain certain keywords with the osxphotos
+export command's --directory option:
 
---directory "{keyword|lower matches                                           
-travel|vacation?Travel-Photos,Not-Travel-Photos}"                             
+--directory "{keyword|lower matches
+travel|vacation?Travel-Photos,Not-Travel-Photos}"
 
-This exports any photo that has keywords 'travel' or 'vacation' into a        
-directory 'Travel-Photos' and all other photos into directory                 
-'Not-Travel-Photos'.                                                          
+This exports any photo that has keywords 'travel' or 'vacation' into a
+directory 'Travel-Photos' and all other photos into directory
+'Not-Travel-Photos'.
 
-This can be used to rename files as well, for example: --filename             
-"{favorite?Favorite-{original_name},{original_name}}"                         
+This can be used to rename files as well, for example: --filename
+"{favorite?Favorite-{original_name},{original_name}}"
 
-This renames any photo that is a favorite as 'Favorite-ImageName.jpg' (where  
-'ImageName.jpg' is the original name of the photo) and all other photos with  
-the unmodified original name.                                                 
+This renames any photo that is a favorite as 'Favorite-ImageName.jpg' (where
+'ImageName.jpg' is the original name of the photo) and all other photos with
+the unmodified original name.
 
-&combine_value: Template fields may be combined with another template         
-statement to return multiple values. The combine_value is another template    
-statement. For example, the template {created.year&{folder_album,}} would     
-resolve to ["1999", "Vacation"] if the photo was created in 1999 and was in   
-the album Vacation. Because the combine_value is a template statement,        
-multiple templates may be combined together by nesting the combine operator:  
-{template1&{template2&{template3,},},}. In this example, a null default value 
-is used to prevent the default value from being combined if any of the nested 
-templates does not resolve to a value                                         
+&combine_value: Template fields may be combined with another template
+statement to return multiple values. The combine_value is another template
+statement. For example, the template {created.year&{folder_album,}} would
+resolve to ["1999", "Vacation"] if the photo was created in 1999 and was in
+the album Vacation. Because the combine_value is a template statement,
+multiple templates may be combined together by nesting the combine operator:
+{template1&{template2&{template3,},},}. In this example, a null default value
+is used to prevent the default value from being combined if any of the nested
+templates does not resolve to a value
 
-?bool_value: Template fields may be evaluated as boolean (True/False) by      
-appending "?" after the field name (and following "(field_arg)" or            
+?bool_value: Template fields may be evaluated as boolean (True/False) by
+appending "?" after the field name (and following "(field_arg)" or
 "[find/replace]".  If a field is True (e.g. photo is HDR and field is "{hdr}")
-or has any value, the value following the "?" will be used to render the      
-template instead of the actual field value.  If the template field evaluates  
+or has any value, the value following the "?" will be used to render the
+template instead of the actual field value.  If the template field evaluates
 to False (e.g. in above example, photo is not HDR) or has no value (e.g. photo
-has no title and field is "{title}") then the default value following a ","   
-will be used.                                                                 
+has no title and field is "{title}") then the default value following a ","
+will be used.
 
-e.g. if photo is an HDR image,                                                
+e.g. if photo is an HDR image,
 
- • "{hdr?ISHDR,NOTHDR}" renders to "ISHDR"                                    
+ • "{hdr?ISHDR,NOTHDR}" renders to "ISHDR"
 
-and if it is not an HDR image,                                                
+and if it is not an HDR image,
 
- • "{hdr?ISHDR,NOTHDR}" renders to "NOTHDR"                                   
+ • "{hdr?ISHDR,NOTHDR}" renders to "NOTHDR"
 
-,default: optional default value to use if the template name has no value.    
+,default: optional default value to use if the template name has no value.
 This modifier is also used for the value if False for boolean-type fields (see
-above) as well as to hold a sub-template for values like {created.strftime}.  
-If no default value provided, "_" is used.                                    
+above) as well as to hold a sub-template for values like {created.strftime}.
+If no default value provided, "_" is used.
 
-e.g., if photo has no title set,                                              
+e.g., if photo has no title set,
 
- • "{title}" renders to "_"                                                   
- • "{title,I have no title}" renders to "I have no title"                     
+ • "{title}" renders to "_"
+ • "{title,I have no title}" renders to "I have no title"
 
-Template fields such as created.strftime use the default value to pass the    
-template to use for strftime.                                                 
+Template fields such as created.strftime use the default value to pass the
+template to use for strftime.
 
-e.g., if photo date is 4 February 2020, 19:07:38,                             
+e.g., if photo date is 4 February 2020, 19:07:38,
 
- • "{created.strftime,%Y-%m-%d-%H%M%S}" renders to "2020-02-04-190738"        
+ • "{created.strftime,%Y-%m-%d-%H%M%S}" renders to "2020-02-04-190738"
 
-Some template fields such as "{media_type}" use the default value to allow    
-customization of the output. For example, "{media_type}" resolves to the      
-special media type of the photo such as panorama or selfie.  You may use the  
-default value to override these in form:                                      
-"{media_type,video=vidéo;time_lapse=vidéo_accélérée}". In this example, if    
-photo was a time_lapse photo, media_type would resolve to vidéo_accélérée     
-instead of time_lapse.                                                        
+Some template fields such as "{media_type}" use the default value to allow
+customization of the output. For example, "{media_type}" resolves to the
+special media type of the photo such as panorama or selfie.  You may use the
+default value to override these in form:
+"{media_type,video=vidéo;time_lapse=vidéo_accélérée}". In this example, if
+photo was a time_lapse photo, media_type would resolve to vidéo_accélérée
+instead of time_lapse.
 
-Either or both bool_value or default (False value) may be empty which would   
-result in empty string "" when rendered.                                      
+Either or both bool_value or default (False value) may be empty which would
+result in empty string "" when rendered.
 
-If you want to include "{" or "}" in the output, use "{openbrace}" or         
-"{closebrace}" template substitution.                                         
+If you want to include "{" or "}" in the output, use "{openbrace}" or
+"{closebrace}" template substitution.
 
-e.g. "{created.year}/{openbrace}{title}{closebrace}" would result in          
-"2020/{Photo Title}".                                                         
+e.g. "{created.year}/{openbrace}{title}{closebrace}" would result in
+"2020/{Photo Title}".
 
-Variables                                                                     
+Variables
 
 You can define variables for later use in the template string using the format
-{var:NAME,VALUE} where VALUE is a template statement.  Variables may then be  
-referenced using the format %NAME. For example: {var:foo,bar} defines the     
-variable %foo to have value bar. This can be useful if you want to re-use a   
-complex template value in multiple places within your template string or for  
-allowing the use of characters that would otherwise be prohibited in a        
-template string. For example, the "pipe" (|) character is not allowed in a    
-find/replace pair but you can get around this limitation like so:             
-{var:pipe,{pipe}}{title[-,%pipe]} which replaces the - character with | (the  
-value of %pipe).                                                              
+{var:NAME,VALUE} where VALUE is a template statement.  Variables may then be
+referenced using the format %NAME. For example: {var:foo,bar} defines the
+variable %foo to have value bar. This can be useful if you want to re-use a
+complex template value in multiple places within your template string or for
+allowing the use of characters that would otherwise be prohibited in a
+template string. For example, the "pipe" (|) character is not allowed in a
+find/replace pair but you can get around this limitation like so:
+{var:pipe,{pipe}}{title[-,%pipe]} which replaces the - character with | (the
+value of %pipe).
 
-Another use case for variables is filtering combined template values. For     
-example, using the &combine_value mechanism to combine two template values    
-that might result in duplicate values, you could do the following:            
+Another use case for variables is filtering combined template values. For
+example, using the &combine_value mechanism to combine two template values
+that might result in duplicate values, you could do the following:
 {var:myvar,{template1&{template2,},}}{%myvar|uniq} which allows the use of the
-uniq filter against the combined template values.                             
+uniq filter against the combined template values.
 
-Variables can also be referenced as fields in the template string, for        
-example: {var:year,{created.year}}{original_name}-{%year}. In some cases, use 
-of variables can make your template string more readable.  Variables can be   
-used as template fields, as values for filters, as values for conditional     
+Variables can also be referenced as fields in the template string, for
+example: {var:year,{created.year}}{original_name}-{%year}. In some cases, use
+of variables can make your template string more readable.  Variables can be
+used as template fields, as values for filters, as values for conditional
 operations, or as default values.  When used as a conditional value or default
 value, variables should be treated like any other field and enclosed in braces
-as conditional and default values are evaluated as template strings. For      
-example: {var:name,Katie}{person contains {%name}?{%name},Not-{%name}}.       
+as conditional and default values are evaluated as template strings. For
+example: {var:name,Katie}{person contains {%name}?{%name},Not-{%name}}.
 
-If you need to use a % (percent sign character), you can escape the percent   
-sign by using %%.  You can also use the {percent} template field where a      
-template field is required. For example:                                      
+If you need to use a % (percent sign character), you can escape the percent
+sign by using %%.  You can also use the {percent} template field where a
+template field is required. For example:
 
-{title[:,%%]} replaces the : with % and {title contains                       
-Foo?{title}{percent},{title}} adds % to the  title if it contains Foo.        
+{title[:,%%]} replaces the : with % and {title contains
+Foo?{title}{percent},{title}} adds % to the  title if it contains Foo.
 
 With the --directory and --filename options you may specify a template for the
 export directory or filename, respectively. The directory will be appended to
@@ -2187,7 +2214,7 @@ corresponding value from the table below.  Invalid substitutions will result
 in a an error and the script will abort.
 
 
-                            Template Substitutions                            
+                            Template Substitutions
 
 Substitution                    Description
 {name}                          Current filename of the photo
@@ -2482,7 +2509,7 @@ Substitution                    Description
 {cr}                            A carriage return: '\r'
 {crlf}                          A carriage return + line feed: '\r\n'
 {tab}                           :A tab: '\t'
-{osxphotos_version}             The osxphotos version, e.g. '0.69.2'
+{osxphotos_version}             The osxphotos version, e.g. '0.73.1'
 {osxphotos_cmd_line}            The full command line used to run osxphotos
 
 The following substitutions may result in multiple values. Thus if specified
@@ -2523,7 +2550,7 @@ Substitution             Description
                          {exiftool:IPTC:Keywords} to extract keywords. See
                          https://exiftool.org/TagNames/ for list of valid
                          tag names.  You must specify group (e.g. EXIF,
-                         IPTC, etc) as used in `exiftool -G`. exiftool must
+                         IPTC, etc) as used in 'exiftool -G'. exiftool must
                          be installed in the path to use this template.
 {searchinfo.holiday}     Holiday names associated with a photo, e.g.
                          'Christmas Day'; (Photos 5+ only, applied
@@ -2617,7 +2644,7 @@ Substitution  Description
 {filepath}    The full path to the exported file
 
 
-                                 Post Command                                 
+                                 Post Command
 
 You can run commands on the exported photos for post-processing using the '--
 post-command' option. '--post-command' is passed a CATEGORY and a COMMAND.
@@ -2682,7 +2709,7 @@ first to ensure your commands are as expected. This will not actually run the
 commands but will print out the exact command string which would be executed.
 
 
-                                Post Function                                 
+                                Post Function
 
 You can run your own python functions on the exported photos for post-
 processing using the '--post-function' option. '--post-function' is passed the
@@ -2778,7 +2805,7 @@ Valid filters are:
 - `remove(x)`: Remove x from list of values, e.g. remove(b): ['a', 'b', 'c'] => ['a', 'c'].
 - `slice(start:stop:step)`: Slice list using same semantics as Python's list slicing, e.g. slice(1:3): ['a', 'b', 'c', 'd'] => ['b', 'c']; slice(1:4:2): ['a', 'b', 'c', 'd'] => ['b', 'd']; slice(1:): ['a', 'b', 'c', 'd'] => ['b', 'c', 'd']; slice(:-1): ['a', 'b', 'c', 'd'] => ['a', 'b', 'c']; slice(::-1): ['a', 'b', 'c', 'd'] => ['d', 'c', 'b', 'a']. See also sslice().
 - `sslice(start:stop:step)`: [s(tring) slice] Slice values in a list using same semantics as Python's string slicing, e.g. sslice(1:3):'abcd => 'bc'; sslice(1:4:2): 'abcd' => 'bd', etc. See also slice().
-- `filter(x)`: Filter list of values using predicate x; for example, `{folder_album|filter(contains Events)}` returns only folders/albums containing the word 'Events' in their path.
+- `filter(x)`: Filter list of values using predicate x; for example, '{folder_album|filter(contains Events)}' returns only folders/albums containing the word 'Events' in their path.
 - `int`: Convert values in list to integer, e.g. 1.0 => 1. If value cannot be converted to integer, remove value from list. ['1.1', 'x'] => ['1']. See also float.
 - `float`: Convert values in list to floating point number, e.g. 1 => 1.0. If value cannot be converted to float, remove value from list. ['1', 'x'] => ['1.0']. See also int.
 
@@ -2980,7 +3007,7 @@ The following template field substitutions are availabe for use the templating s
 |{cr}|A carriage return: '\r'|
 |{crlf}|A carriage return + line feed: '\r\n'|
 |{tab}|:A tab: '\t'|
-|{osxphotos_version}|The osxphotos version, e.g. '0.69.2'|
+|{osxphotos_version}|The osxphotos version, e.g. '0.73.1'|
 |{osxphotos_cmd_line}|The full command line used to run osxphotos|
 |{album}|Album(s) photo is contained in|
 |{folder_album}|Folder path + album photo is contained in. e.g. 'Folder/Subfolder/Album' or just 'Album' if no enclosing folder|
@@ -2992,7 +3019,7 @@ The following template field substitutions are availabe for use the templating s
 |{label}|Image categorization label associated with a photo (Photos 5+ only). Labels are added automatically by Photos using machine learning algorithms to categorize images. These are not the same as {keyword} which refers to the user-defined keywords/tags applied in Photos.|
 |{label_normalized}|All lower case version of 'label' (Photos 5+ only)|
 |{comment}|Comment(s) on shared Photos; format is 'Person name: comment text' (Photos 5+ only)|
-|{exiftool}|Format: '{exiftool:GROUP:TAGNAME}'; use exiftool (https://exiftool.org) to extract metadata, in form GROUP:TAGNAME, from image.  E.g. '{exiftool:EXIF:Make}' to get camera make, or {exiftool:IPTC:Keywords} to extract keywords. See https://exiftool.org/TagNames/ for list of valid tag names.  You must specify group (e.g. EXIF, IPTC, etc) as used in `exiftool -G`. exiftool must be installed in the path to use this template.|
+|{exiftool}|Format: '{exiftool:GROUP:TAGNAME}'; use exiftool (https://exiftool.org) to extract metadata, in form GROUP:TAGNAME, from image.  E.g. '{exiftool:EXIF:Make}' to get camera make, or {exiftool:IPTC:Keywords} to extract keywords. See https://exiftool.org/TagNames/ for list of valid tag names.  You must specify group (e.g. EXIF, IPTC, etc) as used in 'exiftool -G'. exiftool must be installed in the path to use this template.|
 |{searchinfo.holiday}|Holiday names associated with a photo, e.g. 'Christmas Day'; (Photos 5+ only, applied automatically by Photos' image categorization algorithms).|
 |{searchinfo.activity}|Activities associated with a photo, e.g. 'Sporting Event'; (Photos 5+ only, applied automatically by Photos' image categorization algorithms).|
 |{searchinfo.venue}|Venues associated with a photo, e.g. name of restaurant; (Photos 5+ only, applied automatically by Photos' image categorization algorithms).|
@@ -3152,6 +3179,15 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://christiansievers.info"><img src="https://avatars.githubusercontent.com/u/20228200?v=4?s=75" width="75px;" alt="Christian Sievers"/><br /><sub><b>Christian Sievers</b></sub></a><br /><a href="https://github.com/RhetTbull/osxphotos/commits?author=christiansievers" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/mravery"><img src="https://avatars.githubusercontent.com/u/1683929?v=4?s=75" width="75px;" alt="Avery Chan"/><br /><sub><b>Avery Chan</b></sub></a><br /><a href="https://github.com/RhetTbull/osxphotos/issues?q=author%3Amravery" title="Bug reports">🐛</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/dobernhardt"><img src="https://avatars.githubusercontent.com/u/57567625?v=4?s=75" width="75px;" alt="dobernhardt"/><br /><sub><b>dobernhardt</b></sub></a><br /><a href="https://github.com/RhetTbull/osxphotos/issues?q=author%3Adobernhardt" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/JxxIT"><img src="https://avatars.githubusercontent.com/u/110342008?v=4?s=75" width="75px;" alt="JxxIT"/><br /><sub><b>JxxIT</b></sub></a><br /><a href="https://github.com/RhetTbull/osxphotos/issues?q=author%3AJxxIT" title="Bug reports">🐛</a> <a href="https://github.com/RhetTbull/osxphotos/commits?author=JxxIT" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/KeyPlayerMaek"><img src="https://avatars.githubusercontent.com/u/25553779?v=4?s=75" width="75px;" alt="Marek Toth"/><br /><sub><b>Marek Toth</b></sub></a><br /><a href="https://github.com/RhetTbull/osxphotos/issues?q=author%3AKeyPlayerMaek" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/pl804"><img src="https://avatars.githubusercontent.com/u/101955060?v=4?s=75" width="75px;" alt="pl804"/><br /><sub><b>pl804</b></sub></a><br /><a href="https://github.com/RhetTbull/osxphotos/commits?author=pl804" title="Tests">⚠️</a> <a href="#data-pl804" title="Data">🔣</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/cstaubli"><img src="https://avatars.githubusercontent.com/u/6720436?v=4?s=75" width="75px;" alt="Christian Staubli"/><br /><sub><b>Christian Staubli</b></sub></a><br /><a href="https://github.com/RhetTbull/osxphotos/issues?q=author%3Acstaubli" title="Bug reports">🐛</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="http://yazdanra.com"><img src="https://avatars.githubusercontent.com/u/32798567?v=4?s=75" width="75px;" alt="Yazdan Ranjbar"/><br /><sub><b>Yazdan Ranjbar</b></sub></a><br /><a href="https://github.com/RhetTbull/osxphotos/commits?author=YazdanRa" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/m-reiter"><img src="https://avatars.githubusercontent.com/u/5221258?v=4?s=75" width="75px;" alt="m-reiter"/><br /><sub><b>m-reiter</b></sub></a><br /><a href="https://github.com/RhetTbull/osxphotos/issues?q=author%3Am-reiter" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://www.mherzberg.de"><img src="https://avatars.githubusercontent.com/u/12444544?v=4?s=75" width="75px;" alt="Michael Herzberg"/><br /><sub><b>Michael Herzberg</b></sub></a><br /><a href="https://github.com/RhetTbull/osxphotos/issues?q=author%3Amherzberg" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>

@@ -1,5 +1,4 @@
-""" PhotoExport class to export photos
-"""
+"""PhotoExport class to export photos"""
 
 from __future__ import annotations
 
@@ -9,6 +8,7 @@ import json
 import logging
 import os
 import pathlib
+import subprocess
 import typing as t
 from enum import Enum
 
@@ -59,6 +59,12 @@ if t.TYPE_CHECKING:
 
 # retry if download_missing/use_photos_export fails the first time (which sometimes it does)
 MAX_PHOTOSCRIPT_RETRIES = 3
+
+# threshold for consecutive AppleScript export errors before restarting Photos
+APPLESCRIPT_ERROR_THRESHOLD = 10
+
+# counter for tracking consecutive AppleScript export errors
+_consecutive_export_errors = 0
 
 logger = logging.getLogger("osxphotos")
 
@@ -138,6 +144,24 @@ class StagedFiles:
 class PhotoExporter:
     """Export a photo"""
 
+    @staticmethod
+    def _kill_photos_process():
+        """Kill the Photos app process to restart it"""
+        try:
+            # Use pkill to kill the main Photos application process
+            # Use -f to match the full path containing Photos.app
+            result = subprocess.run(
+                ["pkill", "-f", "Photos.app"], check=False, capture_output=True
+            )
+            if result.returncode == 0:
+                logger.debug(
+                    "Photos process killed due to consecutive AppleScript failures"
+                )
+            else:
+                logger.debug("No Photos process found to kill")
+        except Exception as e:
+            logger.warning(f"Failed to kill Photos process: {e}")
+
     def __init__(self, photo: "PhotoInfo", tmpdir: t.Optional[str] = None):
         self.photo = photo
         self._render_options = RenderOptions()
@@ -172,14 +196,14 @@ class PhotoExporter:
               in which case export will use the extension provided by Photos upon export.
               e.g. to get the extension of the edited photo,
               reference PhotoInfo.path_edited
-            options (`ExportOptions`): t.Optional ExportOptions instance
+            options ('ExportOptions'): t.Optional ExportOptions instance
 
         Returns:
             ExportResults instance
 
         Note:
             To use dry run mode, you must set options.dry_run=True and also pass in memory version of export_db,
-              and no-op fileutil (e.g. `ExportDBInMemory` and `FileUtilNoOp`) in options.export_db and options.fileutil respectively
+              and no-op fileutil (e.g. 'ExportDBInMemory' and 'FileUtilNoOp') in options.export_db and options.fileutil respectively
         """
 
         options = options or ExportOptions()
@@ -238,11 +262,11 @@ class PhotoExporter:
         dest, options = self._should_convert_to_jpeg(dest, options)
 
         # stage files for export by finding path in local library or downloading from iCloud as appropriate
-        # for `--download-missing` and `--update` case, this may cause unnecessary downloads
+        # for '--download-missing' and '--update' case, this may cause unnecessary downloads
         # as it will download the file even if it's not needed (won't be checked until the _should_update_photo() call from _export_photo()
         # fixing this will require major refactoring of the export code, see #1086
         # leaving it for now as this should not be a common use case
-        # (if using `--update` it is much better to be using "Download originals to this Mac" in Photos)
+        # (if using '--update' it is much better to be using "Download originals to this Mac" in Photos)
         staged_files = self._stage_photos_for_export(options)
         src = staged_files.edited if options.edited else staged_files.original
 
@@ -1169,6 +1193,17 @@ class PhotoExporter:
             has not been edited. This is due to how Photos Applescript interface works.
         """
 
+        global _consecutive_export_errors
+
+        # Check if we've hit the error threshold and need to restart Photos
+        if _consecutive_export_errors >= APPLESCRIPT_ERROR_THRESHOLD:
+            logger.warning(
+                f"AppleScript export has failed {_consecutive_export_errors} consecutive times, "
+                f"restarting Photos app"
+            )
+            self._kill_photos_process()
+            _consecutive_export_errors = 0
+
         dest = pathlib.Path(dest)
         if not dest.is_dir():
             raise ValueError(f"dest {dest} must be a directory")
@@ -1195,10 +1230,18 @@ class PhotoExporter:
                 )
                 retries += 1
         except Exception as e:
+            _consecutive_export_errors += 1
+            logger.debug(
+                f"AppleScript export error count: {_consecutive_export_errors}"
+            )
             raise ExportError(e)
 
         if not exported_files or not filename:
             # nothing got exported
+            _consecutive_export_errors += 1
+            logger.debug(
+                f"AppleScript export error count: {_consecutive_export_errors}"
+            )
             raise ExportError(f"Could not export photo {uuid} ({lineno(__file__)})")
         # need to find actual filename as sometimes Photos renames JPG to jpeg on export
         # may be more than one file exported (e.g. if Live Photo, Photos exports both .jpeg and .mov)
@@ -1228,6 +1271,11 @@ class PhotoExporter:
                     FileUtil.unlink(dest_new)
                 FileUtil.copy(str(path), str(dest_new))
             exported_paths.append(str(dest_new))
+
+        # Reset error counter on successful export
+        if exported_paths:
+            _consecutive_export_errors = 0
+
         return exported_paths
 
     def _export_aae(

@@ -2,6 +2,243 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.73.1](https://github.com/RhetTbull/osxphotos/compare/v0.73.0...v0.73.1)
+
+### v0.73.1 (2025-09-27)
+
+Bug fixes for broken dependency.
+
+#### Added
+
+#### Changed
+
+- All CLI commands check for macOS version before executing. (#1934)
+- Allow export_cli to accept a PhotosDB for the db argument (#1915)
+- `osxphotos timewarp` will not load database if `--uuid` or `--uuid-from-file` is specified (#1929)
+
+#### Removed
+
+#### Fixed
+
+Fix broken whenever dependency (#1937)
+Fix `export --delete-file` causes crash
+
+#### Contributors
+
+* @RhetTbull [@RhetTbull](https://github.com/rhettbull).
+* @oPromessa [@oPromessa](https://github.com/oPromessa).
+
+## [v0.73.0](https://github.com/RhetTbull/osxphotos/compare/v0.72.3...v0.73.0)
+
+Adds limited set of query options for `timewarp` and `batch-edit` commands. Adds `--set-favorite`, `--clear-favorite` to batch-edit. Buf fix for edited photos in iPhoto libraries.
+
+For example, to edit all photos in an album named "My Album" and set them as favorites:
+
+```
+osxphotos batch-edit --album "My Album" --set-favorite
+```
+
+Query options have also been added to `timewarp`. For example, to adjust the time on all photos added in the last 1 day:
+
+```
+osxphotos timewarp --time-delta "+1 hour" --added-in-last "1 day"
+```
+
+**NOTE**: This release includes breaking changes for `batch-edit` and `timewarp` commands and for the `--album` and `--folder` query options that apply to all commands including `query` and `export`.
+
+Specifically, the `--album` option for `batch-edit` has been renamed to `--add-to-album`. The `--inspect` shot option in `timewarp` is now `-I` instead of `-i`.
+
+Additionally, the `--album` and `--folder` query options in all commands that use query options now automatically split folders and albums. For example `--album "Folder/Album"` will only operate on the album "Album" in the folder "Folder". If the album name contains a slash, use a double slash `//` to escape it: `--album "Folder//Album"`.
+
+### v0.73.0 (2025-09-17)
+
+#### Added
+
+* Implement query options for `timewarp`
+* Implement query options for `batch-edit`
+* Add `--set-favorite`, `--clear-favorite` to batch-edit (#1900)
+
+#### Changed
+
+* `--album` option for `batch-edit` renamed to `--add-to-album`
+* `export_cli()` function can now accept either a path to the Photos library or a `PhotosDB()` instance. This allows custom usage for long-running use-cases.
+* `--inspect` short option in `timewarp` is now `-I` instead of `-i`.
+* `--album` and `--folder` query options in all commands that use query options now automatically split folders and albums on `/`, use `//` to escape a slash in the album or folder name.
+
+#### Removed
+
+#### Fixed
+
+* Prioritize QuickTime:ContentCreateDate over EXIF:DateTimeOriginal for videos.
+* Catch errors when creating backup database.
+* Fixed `path_edited` for iPhotos.
+
+#### Contributors
+
+* @RhetTbull [@RhetTbull](https://github.com/rhettbull).
+* @oPromessa [@oPromessa](https://github.com/oPromessa).
+
+## [v0.72.3](https://github.com/RhetTbull/osxphotos/compare/v0.72.2...v0.72.3)
+
+Bug fix for malformed photos.db file (again) and a few other fixes.
+
+### v0.72.3 (2025-08-31)
+
+#### Added
+
+#### Changed
+
+#### Removed
+
+#### Fixed
+
+- Fix for malformed or missing photos.db file (#1893)
+- Fix for regex characters in file name on import (#1910)
+- Fix for invalid values in burst properties (#1908)
+
+#### Contributors
+
+- @RhetTbull [@RhetTbull](https://github.com/rhettbull).
+
+## [v0.72.2](https://github.com/RhetTbull/osxphotos/compare/v0.72.1...v0.72.2)
+
+Bug fix for malformed photos.db file
+
+### v0.72.2 (2025-08-24)
+
+#### Added
+
+#### Changed
+
+- Updated documentation formatting for Sphinx.
+
+#### Removed
+
+#### Fixed
+
+- Fix for malformed or missing photos.db file (#1805, #1893)
+
+#### Contributors
+
+- @RhetTbull [@RhetTbull](https://github.com/rhettbull).
+
+## [v0.72.1](https://github.com/RhetTbull/osxphotos/compare/v0.72.1...v0.72.0)
+
+Added homebrew install support.
+
+### v0.72.1 (2025-06-16)
+
+#### Added
+
+- Support for installing osxphotos using homebrew.
+
+```bash
+# Add the tap
+brew tap RhetTbull/osxphotos
+
+# Install osxphotos
+brew install osxphotos
+```
+
+#### Changed
+
+#### Removed
+
+#### Fixed
+
+#### Contributors
+
+- @scottrobertson [@scottrobertson](https://github.com/scottrobertson) for homebrew formula.
+
+## [v0.72.0](https://github.com/RhetTbull/osxphotos/compare/v0.72.0...v0.71.0)
+
+Initial support for macOS Tahoe (16 / 26)
+
+### v0.72.0 (2025-06-12)
+
+#### Added
+
+- Initial support for macOS Tahoe (macOS 16 / 26). This is very much initial beta support for a beta release of macOS that is is likely to change. I have tested export and import but not other features. If you encounter any issues, please report them on GitHub.
+
+#### Changed
+
+- `osxphotos export` will no longer try to export syndicated photos that have not been saved to the library (these will always be missing and cannot be exported with --download-missing). Syndicated photos are photos shared in Messages app. They show up in the library but are not saved to the library until the user imports them. Previously, osxphotos was trying to export these photos which resulted in "missing" messages during export and this caused confusion for users.
+
+#### Removed
+
+#### Fixed
+
+- Kill Photos app if it hangs during --download-missing multiple times (#1862)
+- Fix --exiftool so it timesout if the exiftool process hangs (#1855)
+- Skip missing syndicated photos on export (#1865)
+
+#### Contributors
+
+- @RhetTbull [@RhetTbull](https://github.com/RhetTbull) for code.
+
+## [v0.71.0](https://github.com/RhetTbull/osxphotos/compare/v0.71.0...v0.70.0)
+
+Fixed daylight savings time issues with `timewarp` command.
+
+### v0.71.0 (2025-06-07)
+
+#### Added
+
+#### Changed
+
+#### Removed
+
+#### Fixed
+
+  * Fixed timewarp to work correctly with daylight savings time. (#1777)
+
+#### Contributors
+
+  * @RhetTbull [@RhetTbull](https://github.com/RhetTbull) for code.
+
+### v0.70.0 (2025-05-10)
+
+## [v0.70.0](https://github.com/RhetTbull/osxphotos/compare/v0.70.0...v0.69.2)
+
+Fixes for macOS 15, import, timewarp
+
+### v0.70.0 (2025-05-10)
+
+#### Added
+
+    * Added `--ignore-exportdb` option to the export command to skip checking for the `.osxphotos_export.db` file in the export folder. [#1775]
+    * Improved performance of the `exportdb --history` query to speed up history lookups. [#1765]
+    * Introduced `--set-timezone` in the import command for explicit timezone assignment. [#1797]
+    * Refactored the `info` command to use the new `counts` module and restored compatibility with iPhoto libraries. [#1771]
+
+#### Changed
+
+    * Unified date/time parsing logic between the import and timewarp commands; fixed DST‐boundary parsing issues. [#1840]
+    * Enhanced support for the latest Photos library database schema on macOS 15. [#1846]
+
+#### Removed
+
+
+#### Fixed
+
+    * Fixed report generation so that `--report` and `--append` flags work together correctly. [#1850]
+    * Resolved errors in comment processing to ensure shared‐owner and title data export correctly. [#1808]
+    * Improved accuracy of photo timezone logging and corrected timezone detection in the `timewarp` command. [#1845, #1843]
+    * Ensured `timewarp` and `batch-edit` only process the current selection when neither `--uuid` nor `--uuid-from-file` are specified. [#1781]
+    * Fixed rare crashes during face‐region metadata export when a photo’s width or height is zero. [#1810]
+    * Added an additional fix so that `pull-exif timezone` updates correctly when `offset_seconds == 0`. [#1773]
+    * Fixed intermittent `utime` failures when updating file timestamps during export. [#1826]
+
+#### Contributors
+
+    * @RhetTbull [@RhetTbull](https://github.com/RhetTbull) for code.
+    * @oPromessa [@oPromessa](https://github.com/oPromessa) for code.
+    * @JxxIT [@JxxIT](https://github.com/JxxIT) for code.
+    * @pl804 [@pl804](https://github.com/pl804) for tests and data.
+    * @cstaubli [@cstaubli](https://github.com/cstaubli) for bug report.
+    * @KeyPlayerMaek [@KeyPlayerMaek](https://github.com/KeyPlayerMaek) for bug report.
+    * @dobernhardt [@dobernhardt](https://github.com/dobernhardt) for bug report.
+
 ## [v0.69.2](https://github.com/RhetTbull/osxphotos/compare/v0.69.2...v0.69.0)
 
 Fix for crash on macOS 15.2

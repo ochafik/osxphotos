@@ -7,6 +7,8 @@ from functools import cache
 from typing import Optional
 from zoneinfo import ZoneInfo
 
+from whenever import Date, Time, ZonedDateTime
+
 from osxphotos.datetime_utils import get_local_tz
 
 
@@ -34,6 +36,7 @@ def utc_offset_string_to_seconds(utc_offset: str) -> int:
 
 def update_datetime(
     dt: datetime.datetime,
+    tzinfo: Optional[ZoneInfo] = None,
     date: Optional[datetime.date] = None,
     time: Optional[datetime.time] = None,
     date_delta: Optional[datetime.timedelta] = None,
@@ -41,10 +44,11 @@ def update_datetime(
     local_time_delta: Optional[datetime.timedelta] = None,
 ) -> datetime.datetime:
     """
-    Update the date and time of a datetime object.
+    Update the date and time of a datetime object using DST-aware operations.
 
     Args:
         dt: datetime object
+        tzinfo: ZoneInfo for the datetime object or None
         date: new date
         time: new time
         date_delta: a timedelta to apply
@@ -56,23 +60,45 @@ def update_datetime(
 
     Note:
         local_time_delta is only used when both time and local_time_delta are provided
+        Uses whenever package internally for DST-aware calculations
     """
+    if dt.tzinfo is None:
+        dt_with_tz = dt.astimezone(tzinfo) if tzinfo else dt.astimezone(ZoneInfo("UTC"))
+    else:
+        dt_with_tz = dt
+
+    zoned_dt = ZonedDateTime.from_py_datetime(dt_with_tz)
+
     if date is not None:
-        dt = dt.replace(year=date.year, month=date.month, day=date.day)
+        whenever_date = Date(year=date.year, month=date.month, day=date.day)
+        zoned_dt = zoned_dt.replace_date(whenever_date)
+
     if time is not None:
-        dt = dt.replace(
+        whenever_time = Time(
             hour=time.hour,
             minute=time.minute,
             second=time.second,
-            microsecond=time.microsecond,
+            nanosecond=time.microsecond * 1000,
         )
+        zoned_dt = zoned_dt.replace_time(whenever_time)
+
     if date_delta is not None:
-        dt = dt + date_delta
+        zoned_dt = zoned_dt.add(seconds=date_delta.total_seconds())
+
     if time_delta is not None:
-        dt = dt + time_delta
-    if time and local_time_delta is not None:
-        dt = dt + local_time_delta
-    return dt
+        zoned_dt = zoned_dt.add(seconds=time_delta.total_seconds())
+
+    if time is not None and local_time_delta is not None:
+        zoned_dt = zoned_dt.add(seconds=local_time_delta.total_seconds())
+
+    result_dt = zoned_dt.py_datetime()
+
+    if dt.tzinfo is None:
+        local_tz = get_local_tz(dt)
+        result_local = result_dt.astimezone(local_tz)
+        return result_local.replace(tzinfo=None)
+    else:
+        return result_dt.astimezone(dt.tzinfo)
 
 
 def time_string_to_datetime(time: str) -> datetime.time:
@@ -224,3 +250,57 @@ def get_valid_timezone(tz_name: str, dt: datetime.datetime) -> str:
         return timezone_for_offset(tz_name, dt)
     except ValueError as e:
         raise ValueError(f"{tz_name} does not appear to be a valid timezone.") from e
+
+
+def etc_to_gmt_offset(etc_tz: str) -> str:
+    """
+    Convert an 'Etc/GMT±H' style timezone to 'GMT±HHMM' format.
+
+    Args:
+        etc_tz: the timezone str
+
+    Returns: converted timezone str
+
+    Raises:
+        ValueError if invalid format or offset
+
+    Note:
+      - 'Etc/GMT+5'  -> 'GMT-0500'  (POSIX sign inversion)
+      - 'Etc/GMT-3'  -> 'GMT+0300'
+      - Leading zeros for NON-ZERO hours are invalid (e.g., 'Etc/GMT+05' -> ValueError)
+      - Zero is allowed with or without a sign (e.g., 'Etc/GMT+0', 'Etc/GMT-0', 'Etc/GMT+00')
+
+    Example:
+        Etc/GMT+5  -> GMT-0500
+        Etc/GMT-3  -> GMT+0300
+        Etc/GMT+0  -> GMT+0000
+    """
+    prefix = "Etc/GMT"
+    if not isinstance(etc_tz, str) or not etc_tz.startswith(prefix):
+        raise ValueError(f"Invalid Etc/GMT format: {etc_tz!r}")
+
+    offset_part = etc_tz[len(prefix) :]
+    if not offset_part:
+        raise ValueError(f"Invalid offset in timezone: {etc_tz!r}")
+
+    # Optional sign, then digits only
+    sign_char = ""
+    digits = offset_part
+    if digits[0] in "+-":
+        sign_char = digits[0]
+        digits = digits[1:]
+
+    if not digits or not digits.isdigit():
+        raise ValueError(f"Invalid offset in timezone: {etc_tz!r}")
+
+    # Reject leading zeros on non-zero values (e.g., '05', '007', etc.)
+    if len(digits) > 1 and digits[0] == "0":
+        raise ValueError(f"Leading zeros not allowed: {etc_tz}")
+
+    offset_hours = int((sign_char or "+") + digits)
+
+    # Invert the sign because Etc/GMT+5 means GMT-5
+    sign = "-" if offset_hours > 0 else "+"
+    abs_hours = abs(offset_hours)
+
+    return f"GMT{sign}{abs_hours:02d}00"

@@ -1,15 +1,16 @@
-"""Command line interface for osxphotos """
+"""Command line interface for osxphotos"""
 
 import atexit
 import cProfile
 import io
 import pstats
+import sys
 
 import click
 
 from osxphotos._constants import PROFILE_SORT_KEYS
 from osxphotos.disclaim import disclaim, pyapp, pyinstaller
-from osxphotos.platform import is_macos
+from osxphotos.platform import check_and_warn_macos_version, is_macos
 
 from .about import about
 from .albums import albums
@@ -108,6 +109,8 @@ def cli_main(ctx, profile, profile_sort, **kwargs):
     # before this function is called
     ctx.obj = CLI_Obj(group=cli_main)
 
+    check_and_warn_macos_version()
+
     if pyinstaller() or pyapp():
         # Running from executable, run disclaimer
         disclaim()
@@ -129,6 +132,13 @@ def cli_main(ctx, profile, profile_sort, **kwargs):
             click.echo(s.getvalue())
 
         atexit.register(at_exit)
+
+    def flush_stderr():
+        # click CliRunner doesn't respect line buffered stderr so flush it manually
+        # this is only needed for testing
+        sys.stderr.flush()
+
+    atexit.register(flush_stderr)
 
 
 # install CLI commands

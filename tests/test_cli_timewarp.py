@@ -1,4 +1,4 @@
-""" Tests which require user interaction to run for osxphotos timewarp command """
+"""Tests which require user interaction to run for osxphotos timewarp command"""
 
 import datetime
 import os
@@ -9,13 +9,19 @@ from click.testing import CliRunner
 
 from osxphotos import PhotosDB
 from osxphotos.exiftool import ExifTool
+from osxphotos.platform import is_macos
 from tests.conftest import get_os_version
-from tests.parse_timewarp_output import (
-    InspectValuesDateAdded,
-    compare_inspect_output,
-    parse_compare_exif,
-    parse_inspect_output,
-)
+
+if is_macos:
+    from osxphotos.cli.timewarp import timewarp
+    from tests.parse_timewarp_output import (
+        InspectValuesDateAdded,
+        compare_inspect_output,
+        parse_compare_exif,
+        parse_inspect_output,
+    )
+else:
+    pytest.skip("Only runs on macOS", allow_module_level=True)
 
 # set timezone to avoid issues with comparing dates
 # @pytest.fixture(scope="module", autouse=True)
@@ -89,8 +95,7 @@ def ask_user_to_make_selection(
 
 @pytest.mark.timewarp
 def test_inspect(photoslib, suspend_capture):
-    """Test --inspect. NOTE: this test requires user interaction"""
-    from osxphotos.cli.timewarp import timewarp
+    """Test --inspect"""
 
     runner = CliRunner()
     result = runner.invoke(
@@ -106,7 +111,6 @@ def test_inspect(photoslib, suspend_capture):
 @pytest.mark.timewarp
 def test_date(photoslib, suspend_capture):
     """Test --date"""
-    from osxphotos.cli.timewarp import timewarp
 
     runner = CliRunner()
     result = runner.invoke(
@@ -130,7 +134,6 @@ def test_date(photoslib, suspend_capture):
 @pytest.mark.parametrize("input_value,expected", TEST_DATA["date_delta"]["parameters"])
 def test_date_delta(photoslib, suspend_capture, input_value, expected):
     """Test --date-delta"""
-    from osxphotos.cli.timewarp import timewarp
 
     runner = CliRunner()
     result = runner.invoke(
@@ -146,6 +149,8 @@ def test_date_delta(photoslib, suspend_capture, input_value, expected):
         terminal_width=TERMINAL_WIDTH,
     )
     assert result.exit_code == 0
+    time.sleep(1)
+
     result = runner.invoke(
         timewarp,
         ["--inspect", "--plain", "--force", "--uuid", UUID_DICT["pears"]],
@@ -159,7 +164,6 @@ def test_date_delta(photoslib, suspend_capture, input_value, expected):
 @pytest.mark.parametrize("input_value,expected", TEST_DATA["time"]["parameters"])
 def test_time(photoslib, suspend_capture, input_value, expected):
     """Test --time"""
-    from osxphotos.cli.timewarp import timewarp
 
     runner = CliRunner()
     result = runner.invoke(
@@ -168,6 +172,8 @@ def test_time(photoslib, suspend_capture, input_value, expected):
         terminal_width=TERMINAL_WIDTH,
     )
     assert result.exit_code == 0
+    time.sleep(1)
+
     # inspect to get the updated times
     # don't use photo.date as it will return local time instead of the time in the timezone
     result = runner.invoke(
@@ -184,7 +190,6 @@ def test_time(photoslib, suspend_capture, input_value, expected):
 @pytest.mark.parametrize("input_value,expected", TEST_DATA["time_delta"]["parameters"])
 def test_time_delta(photoslib, suspend_capture, input_value, expected):
     """Test --time-delta"""
-    from osxphotos.cli.timewarp import timewarp
 
     runner = CliRunner()
     result = runner.invoke(
@@ -200,6 +205,8 @@ def test_time_delta(photoslib, suspend_capture, input_value, expected):
         terminal_width=TERMINAL_WIDTH,
     )
     assert result.exit_code == 0
+    time.sleep(1)
+
     result = runner.invoke(
         timewarp,
         ["--inspect", "--plain", "--force", "--uuid", UUID_DICT["pears"]],
@@ -217,7 +224,6 @@ def test_time_zone(
     photoslib, suspend_capture, input_value, expected_date, expected_tz, output_file
 ):
     """Test --time-zone"""
-    from osxphotos.cli.timewarp import timewarp
 
     runner = CliRunner()
     result = runner.invoke(
@@ -226,6 +232,8 @@ def test_time_zone(
         terminal_width=TERMINAL_WIDTH,
     )
     assert result.exit_code == 0
+    time.sleep(1)
+
     result = runner.invoke(
         timewarp,
         ["--inspect", "--plain", "--force", "--uuid", UUID_DICT["pears"]],
@@ -240,7 +248,6 @@ def test_time_zone(
 @pytest.mark.parametrize("expected", TEST_DATA["compare_exif"]["expected"])
 def test_compare_exif(photoslib, suspend_capture, expected):
     """Test --compare-exif"""
-    from osxphotos.cli.timewarp import timewarp
 
     runner = CliRunner()
     result = runner.invoke(
@@ -259,7 +266,6 @@ def test_compare_exif(photoslib, suspend_capture, expected):
 )
 def test_compare_exif_add_to_album(photoslib, suspend_capture, expected, album):
     """Test --compare-exif --add-to-album"""
-    from osxphotos.cli.timewarp import timewarp
 
     runner = CliRunner()
     result = runner.invoke(
@@ -291,7 +297,6 @@ def test_compare_exif_add_to_album(photoslib, suspend_capture, expected, album):
 @pytest.mark.parametrize("expected", TEST_DATA["compare_exif_3"]["expected"])
 def test_compare_exif_3(photoslib, suspend_capture, expected):
     """Test --compare-exif"""
-    from osxphotos.cli.timewarp import timewarp
 
     runner = CliRunner()
     result = runner.invoke(
@@ -308,7 +313,6 @@ def test_compare_exif_3(photoslib, suspend_capture, expected):
 @pytest.mark.parametrize("input_value,expected", TEST_DATA["match"]["parameters"])
 def test_match(photoslib, suspend_capture, input_value, expected):
     """Test --timezone --match"""
-    from osxphotos.cli.timewarp import timewarp
 
     runner = CliRunner()
     result = runner.invoke(
@@ -325,6 +329,8 @@ def test_match(photoslib, suspend_capture, input_value, expected):
         terminal_width=TERMINAL_WIDTH,
     )
     assert result.exit_code == 0
+    time.sleep(1)
+
     result = runner.invoke(
         timewarp,
         ["--inspect", "--plain", "--force", "--uuid", UUID_DICT["sunflowers"]],
@@ -335,9 +341,244 @@ def test_match(photoslib, suspend_capture, input_value, expected):
 
 
 @pytest.mark.timewarp
+def test_match_dst(photoslib, suspend_capture):
+    """Test --timezone --match-time for DST and named timezones, #1777"""
+
+    runner = CliRunner()
+    # init the date/time
+    result = runner.invoke(
+        timewarp,
+        [
+            "--time",
+            "21:26:51",
+            "--date",
+            "2017-06-24",
+            "--plain",
+            "--force",
+            "--timezone",
+            "-0500",
+            "--match-time",
+            "--uuid",
+            UUID_DICT["sunflowers"],
+        ],
+        terminal_width=TERMINAL_WIDTH,
+    )
+    assert result.exit_code == 0
+    time.sleep(1)
+
+    result = runner.invoke(
+        timewarp,
+        ["--inspect", "--plain", "--force", "--uuid", UUID_DICT["sunflowers"]],
+        terminal_width=TERMINAL_WIDTH,
+    )
+    output_values = parse_inspect_output(result.output)
+    assert output_values[0].date_tz != "2017-06-24 21:26:51+0200"
+
+    result = runner.invoke(
+        timewarp,
+        [
+            "--timezone",
+            "Europe/Madrid",
+            "--match-time",
+            "--plain",
+            "--force",
+            "--uuid",
+            UUID_DICT["sunflowers"],
+        ],
+        terminal_width=TERMINAL_WIDTH,
+    )
+    assert result.exit_code == 0
+    time.sleep(1)
+
+    result = runner.invoke(
+        timewarp,
+        ["--inspect", "--plain", "--force", "--uuid", UUID_DICT["sunflowers"]],
+        terminal_width=TERMINAL_WIDTH,
+    )
+    output_values = parse_inspect_output(result.output)
+    assert output_values[0].date_tz == "2017-06-24 21:26:51+0200"
+
+
+@pytest.mark.timewarp
+def test_match_no_dst(photoslib, suspend_capture):
+    """Test --timezone --match-time when not in DST and named timezones, #1777"""
+
+    runner = CliRunner()
+    # init the date/time
+    result = runner.invoke(
+        timewarp,
+        [
+            "--time",
+            "21:26:51",
+            "--date",
+            "2017-12-24",
+            "--plain",
+            "--force",
+            "--timezone",
+            "-0500",
+            "--match-time",
+            "--uuid",
+            UUID_DICT["sunflowers"],
+        ],
+        terminal_width=TERMINAL_WIDTH,
+    )
+    assert result.exit_code == 0
+    time.sleep(1)
+
+    result = runner.invoke(
+        timewarp,
+        ["--inspect", "--plain", "--force", "--uuid", UUID_DICT["sunflowers"]],
+        terminal_width=TERMINAL_WIDTH,
+    )
+    output_values = parse_inspect_output(result.output)
+    assert output_values[0].date_tz != "2017-12-24 21:26:51+0100"
+
+    result = runner.invoke(
+        timewarp,
+        [
+            "--timezone",
+            "Europe/Madrid",
+            "--match-time",
+            "--plain",
+            "--force",
+            "--uuid",
+            UUID_DICT["sunflowers"],
+        ],
+        terminal_width=TERMINAL_WIDTH,
+    )
+    assert result.exit_code == 0
+    time.sleep(1)
+
+    result = runner.invoke(
+        timewarp,
+        ["--inspect", "--plain", "--force", "--uuid", UUID_DICT["sunflowers"]],
+        terminal_width=TERMINAL_WIDTH,
+    )
+    output_values = parse_inspect_output(result.output)
+    assert output_values[0].date_tz == "2017-12-24 21:26:51+0100"
+
+
+@pytest.mark.timewarp
+def test_time_delta_dst(photoslib, suspend_capture):
+    """Test --timezone --time-delta with DST change #1839"""
+
+    runner = CliRunner()
+    # init the date/time
+    result = runner.invoke(
+        timewarp,
+        [
+            "--plain",
+            "--force",
+            "--verbose",
+            "--date",
+            "2024-03-31",
+            "--time",
+            "01:00:00",
+            "--timezone",
+            "Europe/Madrid",
+            "--match-time",
+            "--uuid",
+            UUID_DICT["sunflowers"],
+        ],
+        terminal_width=TERMINAL_WIDTH,
+    )
+    assert result.exit_code == 0
+    time.sleep(1)
+
+    result = runner.invoke(
+        timewarp,
+        ["--inspect", "--plain", "--force", "--uuid", UUID_DICT["sunflowers"]],
+        terminal_width=TERMINAL_WIDTH,
+    )
+    output_values = parse_inspect_output(result.output)
+    assert output_values[0].date_tz == "2024-03-31 01:00:00+0100"
+
+    result = runner.invoke(
+        timewarp,
+        [
+            "--time-delta",
+            "+1 hour",
+            "--plain",
+            "--force",
+            "--uuid",
+            UUID_DICT["sunflowers"],
+        ],
+        terminal_width=TERMINAL_WIDTH,
+    )
+    assert result.exit_code == 0
+    time.sleep(1)
+
+    result = runner.invoke(
+        timewarp,
+        ["--inspect", "--plain", "--force", "--uuid", UUID_DICT["sunflowers"]],
+        terminal_width=TERMINAL_WIDTH,
+    )
+    output_values = parse_inspect_output(result.output)
+    assert output_values[0].date_tz == "2024-03-31 03:00:00+0200"
+
+
+@pytest.mark.timewarp
+def test_time_dst_change(photoslib, suspend_capture):
+    """Test --time that forces a DST change"""
+
+    runner = CliRunner()
+    # init the date/time
+    result = runner.invoke(
+        timewarp,
+        [
+            "--plain",
+            "--force",
+            "--verbose",
+            "--date",
+            "2024-03-31",
+            "--time",
+            "01:00:00",
+            "--timezone",
+            "Europe/Madrid",
+            "--match-time",
+            "--uuid",
+            UUID_DICT["sunflowers"],
+        ],
+        terminal_width=TERMINAL_WIDTH,
+    )
+    assert result.exit_code == 0
+    time.sleep(1)
+
+    result = runner.invoke(
+        timewarp,
+        ["--inspect", "--plain", "--force", "--uuid", UUID_DICT["sunflowers"]],
+        terminal_width=TERMINAL_WIDTH,
+    )
+    output_values = parse_inspect_output(result.output)
+    assert output_values[0].date_tz == "2024-03-31 01:00:00+0100"
+
+    result = runner.invoke(
+        timewarp,
+        [
+            "--time",
+            "04:00:00",
+            "--plain",
+            "--force",
+            "--uuid",
+            UUID_DICT["sunflowers"],
+        ],
+        terminal_width=TERMINAL_WIDTH,
+    )
+    assert result.exit_code == 0
+    time.sleep(1)
+
+    result = runner.invoke(
+        timewarp,
+        ["--inspect", "--plain", "--force", "--uuid", UUID_DICT["sunflowers"]],
+        terminal_width=TERMINAL_WIDTH,
+    )
+    output_values = parse_inspect_output(result.output)
+    assert output_values[0].date_tz == "2024-03-31 04:00:00+0200"
+
+
+@pytest.mark.timewarp
 def test_push_exif_missing_file():
     """Test --push-exif when an original file is missing"""
-    from osxphotos.cli.timewarp import timewarp
 
     runner = CliRunner()
     result = runner.invoke(
@@ -378,7 +619,6 @@ def test_push_exif_1(
     output_file,
 ):
     """Test --timezone --match with --push-exif"""
-    from osxphotos.cli.timewarp import timewarp
 
     cli_args = [
         "--timezone",
@@ -397,6 +637,8 @@ def test_push_exif_1(
     runner = CliRunner()
     result = runner.invoke(timewarp, cli_args, terminal_width=TERMINAL_WIDTH)
     assert result.exit_code == 0
+    time.sleep(1)
+
     result = runner.invoke(
         timewarp,
         ["--inspect", "--plain", "--force", "--uuid", UUID_DICT["pumpkins"]],
@@ -426,8 +668,6 @@ def test_push_exif_2(photoslib, suspend_capture):
     pre_test = TEST_DATA["push_exif"]["pre"]
     post_test = TEST_DATA["push_exif"]["post"]
 
-    from osxphotos.cli.timewarp import timewarp
-
     runner = CliRunner()
 
     result = runner.invoke(
@@ -437,6 +677,7 @@ def test_push_exif_2(photoslib, suspend_capture):
     )
     output_values = parse_compare_exif(result.output)
     assert output_values[0] == pre_test
+    time.sleep(1)
 
     result = runner.invoke(
         timewarp,
@@ -467,8 +708,6 @@ def test_pull_exif_1(photoslib, suspend_capture):
     pre_test = TEST_DATA["pull_exif_1"]["pre"]
     post_test = TEST_DATA["pull_exif_1"]["post"]
 
-    from osxphotos.cli.timewarp import timewarp
-
     runner = CliRunner()
 
     # update the photo so we know if the data is updated
@@ -489,6 +728,7 @@ def test_pull_exif_1(photoslib, suspend_capture):
         terminal_width=TERMINAL_WIDTH,
     )
     assert result.exit_code == 0
+    time.sleep(1)
 
     result = runner.invoke(
         timewarp,
@@ -533,8 +773,6 @@ def test_pull_exif_no_time(photoslib, suspend_capture):
     pre_test = TEST_DATA["pull_exif_no_time"]["pre"]
     post_test = TEST_DATA["pull_exif_no_time"]["post"]
 
-    from osxphotos.cli.timewarp import timewarp
-
     runner = CliRunner()
 
     result = runner.invoke(
@@ -558,6 +796,7 @@ def test_pull_exif_no_time(photoslib, suspend_capture):
         terminal_width=TERMINAL_WIDTH,
     )
     assert result.exit_code == 0
+    time.sleep(1)
 
     result = runner.invoke(
         timewarp,
@@ -579,8 +818,6 @@ def test_pull_exif_no_offset(photoslib, suspend_capture):
     """Test --pull-exif when photo has no offset in EXIF"""
     pre_test = TEST_DATA["pull_exif_no_offset"]["pre"]
     post_test = TEST_DATA["pull_exif_no_offset"]["post"]
-
-    from osxphotos.cli.timewarp import timewarp
 
     runner = CliRunner()
 
@@ -605,6 +842,7 @@ def test_pull_exif_no_offset(photoslib, suspend_capture):
         terminal_width=TERMINAL_WIDTH,
     )
     assert result.exit_code == 0
+    time.sleep(1)
 
     result = runner.invoke(
         timewarp,
@@ -628,8 +866,6 @@ def test_pull_exif_no_data(photoslib, suspend_capture):
     """Test --pull-exif when photo has no data in EXIF"""
     pre_test = TEST_DATA["pull_exif_no_data"]["pre"]
     post_test = TEST_DATA["pull_exif_no_data"]["post"]
-
-    from osxphotos.cli.timewarp import timewarp
 
     runner = CliRunner()
 
@@ -670,8 +906,6 @@ def test_pull_exif_no_data_use_file_time(photoslib, suspend_capture):
     """Test --pull-exif when photo has no data in EXIF with --use-file-time"""
     pre_test = TEST_DATA["pull_exif_no_data_use_file_time"]["pre"]
     post_test = TEST_DATA["pull_exif_no_data_use_file_time"]["post"]
-
-    from osxphotos.cli.timewarp import timewarp
 
     runner = CliRunner()
 
@@ -718,7 +952,6 @@ def test_pull_exif_no_data_use_file_time(photoslib, suspend_capture):
 @pytest.mark.parametrize("expected", TEST_DATA["compare_video_1"]["expected"])
 def test_video_compare_exif(photoslib, suspend_capture, expected):
     """Test --compare-exif with video"""
-    from osxphotos.cli.timewarp import timewarp
 
     runner = CliRunner()
     result = runner.invoke(
@@ -739,7 +972,6 @@ def test_video_date_delta(
     photoslib, suspend_capture, input_value, expected, output_file
 ):
     """Test --date-delta with video"""
-    from osxphotos.cli.timewarp import timewarp
 
     runner = CliRunner()
     result = runner.invoke(
@@ -755,6 +987,7 @@ def test_video_date_delta(
         terminal_width=TERMINAL_WIDTH,
     )
     assert result.exit_code == 0
+    time.sleep(1)
 
     result = runner.invoke(
         timewarp,
@@ -773,7 +1006,6 @@ def test_video_time_delta(
     photoslib, suspend_capture, input_value, expected, output_file
 ):
     """Test --time-delta with video"""
-    from osxphotos.cli.timewarp import timewarp
 
     runner = CliRunner()
     result = runner.invoke(
@@ -789,6 +1021,8 @@ def test_video_time_delta(
         terminal_width=TERMINAL_WIDTH,
     )
     assert result.exit_code == 0
+    time.sleep(1)
+
     result = runner.invoke(
         timewarp,
         ["--inspect", "--plain", "--force", "--uuid", UUID_DICT["sunset_video"]],
@@ -802,7 +1036,6 @@ def test_video_time_delta(
 @pytest.mark.parametrize("input_value,expected", TEST_DATA["video_date"]["parameters"])
 def test_video_date(photoslib, suspend_capture, input_value, expected):
     """Test --date with video"""
-    from osxphotos.cli.timewarp import timewarp
 
     runner = CliRunner()
     result = runner.invoke(
@@ -818,6 +1051,8 @@ def test_video_date(photoslib, suspend_capture, input_value, expected):
         terminal_width=TERMINAL_WIDTH,
     )
     assert result.exit_code == 0
+    time.sleep(1)
+
     # inspect to get the updated times
     # don't use photo.date as it will return local time instead of the time in the timezone
     result = runner.invoke(
@@ -833,7 +1068,6 @@ def test_video_date(photoslib, suspend_capture, input_value, expected):
 @pytest.mark.parametrize("input_value,expected", TEST_DATA["video_time"]["parameters"])
 def test_video_time(photoslib, suspend_capture, input_value, expected):
     """Test --time with video"""
-    from osxphotos.cli.timewarp import timewarp
 
     runner = CliRunner()
     result = runner.invoke(
@@ -849,6 +1083,8 @@ def test_video_time(photoslib, suspend_capture, input_value, expected):
         terminal_width=TERMINAL_WIDTH,
     )
     assert result.exit_code == 0
+    time.sleep(1)
+
     # inspect to get the updated times
     # don't use photo.date as it will return local time instead of the time in the timezone
     result = runner.invoke(
@@ -868,7 +1104,6 @@ def test_video_time_zone(
     photoslib, suspend_capture, input_value, expected_date, expected_tz, output_file
 ):
     """Test --time-zone"""
-    from osxphotos.cli.timewarp import timewarp
 
     runner = CliRunner()
     result = runner.invoke(
@@ -884,6 +1119,8 @@ def test_video_time_zone(
         terminal_width=TERMINAL_WIDTH,
     )
     assert result.exit_code == 0
+    time.sleep(1)
+
     result = runner.invoke(
         timewarp,
         ["--inspect", "--plain", "--force", "--uuid", UUID_DICT["sunset_video"]],
@@ -898,7 +1135,6 @@ def test_video_time_zone(
 @pytest.mark.parametrize("input_value,expected", TEST_DATA["video_match"]["parameters"])
 def test_video_match(photoslib, suspend_capture, input_value, expected):
     """Test --timezone --match with video"""
-    from osxphotos.cli.timewarp import timewarp
 
     runner = CliRunner()
     result = runner.invoke(
@@ -915,6 +1151,8 @@ def test_video_match(photoslib, suspend_capture, input_value, expected):
         terminal_width=TERMINAL_WIDTH,
     )
     assert result.exit_code == 0
+    time.sleep(1)
+
     result = runner.invoke(
         timewarp,
         ["--inspect", "--plain", "--force", "--uuid", UUID_DICT["sunset_video"]],
@@ -929,8 +1167,6 @@ def test_video_push_exif(photoslib, suspend_capture):
     """Test --push-exif with video"""
     pre_test = TEST_DATA["video_push_exif"]["pre"]
     post_test = TEST_DATA["video_push_exif"]["post"]
-
-    from osxphotos.cli.timewarp import timewarp
 
     runner = CliRunner()
 
@@ -955,6 +1191,7 @@ def test_video_push_exif(photoslib, suspend_capture):
         terminal_width=TERMINAL_WIDTH,
     )
     assert result.exit_code == 0
+    time.sleep(1)
 
     result = runner.invoke(
         timewarp,
@@ -970,8 +1207,6 @@ def test_video_pull_exif(photoslib, suspend_capture):
     """Test --pull-exif with video"""
     pre_test = TEST_DATA["video_pull_exif"]["pre"]
     post_test = TEST_DATA["video_pull_exif"]["post"]
-
-    from osxphotos.cli.timewarp import timewarp
 
     runner = CliRunner()
 
@@ -1017,6 +1252,7 @@ def test_video_pull_exif(photoslib, suspend_capture):
         terminal_width=TERMINAL_WIDTH,
     )
     assert result.exit_code == 0
+    time.sleep(1)
 
     result = runner.invoke(
         timewarp,
@@ -1036,7 +1272,6 @@ def test_video_pull_exif(photoslib, suspend_capture):
 @pytest.mark.timewarp
 def test_function(photoslib, suspend_capture):
     """Test timewarp function"""
-    from osxphotos.cli.timewarp import timewarp
 
     expected = TEST_DATA["function"]["expected"]
 
@@ -1053,6 +1288,8 @@ def test_function(photoslib, suspend_capture):
         terminal_width=TERMINAL_WIDTH,
     )
     assert result.exit_code == 0
+    time.sleep(1)
+
     result = runner.invoke(
         timewarp,
         ["--inspect", "--plain", "--force", "--uuid", UUID_DICT["pears"]],
@@ -1071,7 +1308,6 @@ def test_function(photoslib, suspend_capture):
 @pytest.mark.timewarp
 def test_parse_date(photoslib, suspend_capture):
     """Test --parse-date"""
-    from osxphotos.cli.timewarp import timewarp
 
     expected = TEST_DATA["parse_date"]["expected"]
 
@@ -1082,6 +1318,8 @@ def test_parse_date(photoslib, suspend_capture):
         terminal_width=TERMINAL_WIDTH,
     )
     assert result.exit_code == 0
+    time.sleep(1)
+
     result = runner.invoke(
         timewarp,
         ["--inspect", "--plain", "--force", "--uuid", UUID_DICT["palm_tree"]],
@@ -1094,7 +1332,6 @@ def test_parse_date(photoslib, suspend_capture):
 @pytest.mark.timewarp
 def test_parse_date_tz(photoslib, suspend_capture):
     """Test --parse-date with a timezone"""
-    from osxphotos.cli.timewarp import timewarp
 
     expected = TEST_DATA["parse_date_tz"]["expected"]
 
@@ -1111,6 +1348,8 @@ def test_parse_date_tz(photoslib, suspend_capture):
         terminal_width=TERMINAL_WIDTH,
     )
     assert result.exit_code == 0
+    time.sleep(1)
+
     result = runner.invoke(
         timewarp,
         ["--inspect", "--plain", "--force", "--uuid", UUID_DICT["palm_tree"]],
@@ -1129,7 +1368,6 @@ def test_date_added(
     photoslib, suspend_capture, date_added: str, expected: InspectValuesDateAdded
 ):
     """Test --date-added"""
-    from osxphotos.cli.timewarp import timewarp
 
     runner = CliRunner()
     result = runner.invoke(
@@ -1138,6 +1376,7 @@ def test_date_added(
         terminal_width=TERMINAL_WIDTH,
     )
     assert result.exit_code == 0
+    time.sleep(1)
 
     result = runner.invoke(
         timewarp,
@@ -1151,7 +1390,6 @@ def test_date_added(
 @pytest.mark.timewarp
 def test_date_added_from_photo(photoslib, suspend_capture):
     """Test --date-added-from-photo"""
-    from osxphotos.cli.timewarp import timewarp
 
     runner = CliRunner()
     result = runner.invoke(
@@ -1160,6 +1398,7 @@ def test_date_added_from_photo(photoslib, suspend_capture):
         terminal_width=TERMINAL_WIDTH,
     )
     assert result.exit_code == 0
+    time.sleep(1)
 
     result = runner.invoke(
         timewarp,
@@ -1174,7 +1413,6 @@ def test_date_added_from_photo(photoslib, suspend_capture):
 @pytest.mark.timewarp
 def test_reset(photoslib, suspend_capture):
     """Test --reset"""
-    from osxphotos.cli.timewarp import timewarp
 
     runner = CliRunner()
     result = runner.invoke(
@@ -1183,6 +1421,7 @@ def test_reset(photoslib, suspend_capture):
         terminal_width=TERMINAL_WIDTH,
     )
     assert result.exit_code == 0
+    time.sleep(1)
 
     result = runner.invoke(
         timewarp,
@@ -1191,3 +1430,33 @@ def test_reset(photoslib, suspend_capture):
     )
     values = parse_inspect_output(result.output)
     assert compare_inspect_output(TEST_DATA["reset"]["expected"], values)
+
+
+@pytest.mark.timewarp
+def test_album_query(photoslib, suspend_capture):
+    """Test --album"""
+
+    runner = CliRunner()
+    result = runner.invoke(
+        timewarp,
+        ["--inspect", "--plain", "--force", "--album", "Different EXIF"],
+        terminal_width=TERMINAL_WIDTH,
+    )
+    assert result.exit_code == 0
+    values = parse_inspect_output(result.output)
+    assert values[0].filename == "IMG_6501.jpeg"
+
+
+@pytest.mark.timewarp
+def test_year_query(photoslib, suspend_capture):
+    """Test --year"""
+
+    runner = CliRunner()
+    result = runner.invoke(
+        timewarp,
+        ["--inspect", "--plain", "--force", "--year", "2021"],
+        terminal_width=TERMINAL_WIDTH,
+    )
+    assert result.exit_code == 0
+    values = parse_inspect_output(result.output)
+    assert len(values) == 4
